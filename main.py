@@ -20,6 +20,12 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.test_image, (int(self.size[0] * 0.5), int(self.size[1] * 0.5)))
         self.original_image = self.image
 
+        self.image_rect = self.image.get_rect(center=(self.x, self.y))
+        self.image_mask = pygame.mask.from_surface(self.image)
+        self.image_of_mask = self.image_mask.to_surface()
+
+        self.original_mask_image = self.image_of_mask
+
     def point_at(self, x, y):
         # calculate distance between racket and mouse
         x_dist = x - player_racket.x
@@ -29,6 +35,10 @@ class PlayerRacket(pygame.sprite.Sprite):
 
         rotated_image = pygame.transform.rotate(self.original_image, angle - 90)
         self.image = rotated_image
+
+        self.image_new_mask = pygame.mask.from_surface(self.image)
+        self.image_of_new_mask = self.image_new_mask.to_surface()
+        
 
 class TennisBall(pygame.sprite.Sprite):
     def __init__(self):
@@ -63,9 +73,10 @@ SCREEN_HEIGHT = 800
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_racket = PlayerRacket()
-all_sprites = pygame.sprite.Group(player_racket)
-
 tennis_ball = TennisBall()
+
+all_sprites = pygame.sprite.Group(player_racket)
+collision_sprites = pygame.sprite.Group()
 
 clock = pygame.time.Clock()
 run = True
@@ -84,12 +95,12 @@ while run:
     player_racket.point_at(pos[0], pos[1])
 
     # rotate racket
-    player_racket_rect = player_racket.image.get_rect(center=(player_racket.x, player_racket.y))
+    player_racket_rect = player_racket.image_of_new_mask.get_rect(center=(player_racket.x, player_racket.y))
 
     #rotate tennis ball
     tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
 
-    screen.blit(player_racket.image, player_racket_rect)
+    screen.blit(player_racket.image_of_new_mask, player_racket_rect)
     screen.blit(tennis_ball.image, tennis_ball_rect)
 
     pygame.draw.circle(screen, 'red', pos, 10)
