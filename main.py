@@ -10,9 +10,10 @@ pygame.init()
 class PlayerRacket(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.test_image = pygame.image.load("images/tennis_racket.png").convert_alpha()
+        self.test_image = pygame.image.load("images/tennis_racket.png").convert()
         self.x = 250
         self.y = 700
+
         # return a width and height of an image
         self.size = self.test_image.get_size()
 
@@ -20,24 +21,32 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.test_image, (int(self.size[0] * 0.5), int(self.size[1] * 0.5)))
         self.original_image = self.image
 
-        self.image_rect = self.image.get_rect(center=(self.x, self.y))
-        self.image_mask = pygame.mask.from_surface(self.image)
-        self.image_of_mask = self.image_mask.to_surface()
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+        self.rect.center = (self.x, self.y)
 
-        self.original_mask_image = self.image_of_mask
+        self.mask = pygame.mask.from_surface(self.image)
+
+        self.original_mask_image = self.mask        
 
     def point_at(self, x, y):
         # calculate distance between racket and mouse
         x_dist = x - player_racket.x
         # -ve because pygame y coordinates increase down screen
         y_dist = -(y - player_racket.y)
+
         angle = math.degrees(math.atan2(y_dist, x_dist))
 
         rotated_image = pygame.transform.rotate(self.original_image, angle - 90)
         self.image = rotated_image
 
-        self.image_new_mask = pygame.mask.from_surface(self.image)
-        self.image_of_new_mask = self.image_new_mask.to_surface()
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        #self.image_new_mask = pygame.mask.from_surface(self.image)
+        #self.image_of_new_mask = self.image_new_mask.to_surface()
+    def update():
+        position = pygame.mouse.get_pos()
+        
+        
         
 
 class TennisBall(pygame.sprite.Sprite):
@@ -62,8 +71,8 @@ class TennisBall(pygame.sprite.Sprite):
 
         self.image = rotated_image
 
-        self.image_new_mask = pygame.mask.from_surface(self.image)
-        self.image_of_new_mask = self.image_new_mask.to_surface()
+        #self.image_new_mask = pygame.mask.from_surface(self.image)
+        #self.image_of_new_mask = self.image_new_mask.to_surface()
 
     def scaleUp(self, factor):
         self.new_size = self.image.get_size()
@@ -71,8 +80,8 @@ class TennisBall(pygame.sprite.Sprite):
         bigger_image = pygame.transform.scale_by(self.image, factor)
         self.image = bigger_image
 
-        self.image_new_mask = pygame.mask.from_surface(self.image)
-        self.image_of_new_mask = self.image_new_mask.to_surface()
+        #self.image_new_mask = pygame.mask.from_surface(self.image)
+        #self.image_of_new_mask = self.image_new_mask.to_surface()
 
     def scaleDown(self, factor):
         self.image_for_going_back = self.image
@@ -82,8 +91,8 @@ class TennisBall(pygame.sprite.Sprite):
         smaller_image = pygame.transform.scale_by(self.image_for_going_back, factor)
         self.image = smaller_image
 
-        self.image_new_mask = pygame.mask.from_surface(self.image)
-        self.image_of_new_mask = self.image_new_mask.to_surface()
+        #self.image_new_mask = pygame.mask.from_surface(self.image)
+        #self.image_of_new_mask = self.image_new_mask.to_surface()
 
 # Set up screens
 SCREEN_WIDTH = 500
@@ -93,8 +102,11 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player_racket = PlayerRacket()
 tennis_ball = TennisBall()
 
-all_sprites = pygame.sprite.Group(player_racket)
-collision_sprites = pygame.sprite.Group()
+player_racket_group = pygame.sprite.Group()
+tennis_ball_group = pygame.sprite.Group()
+
+player_racket_group.add(player_racket)
+tennis_ball_group.add(tennis_ball)
 
 clock = pygame.time.Clock()
 run = True
@@ -107,19 +119,29 @@ while run:
     clock.tick(60)
     screen.fill("white")
 
+
     # get mouse pos
     pos = pygame.mouse.get_pos()
 
     player_racket.point_at(pos[0], pos[1])
 
     # rotate racket
-    player_racket_rect = player_racket.image_of_new_mask.get_rect(center=(player_racket.x, player_racket.y))
+    player_racket_rect = player_racket.image.get_rect(center=(player_racket.x, player_racket.y))
 
     #rotate tennis ball
-    tennis_ball_rect = tennis_ball.image_of_new_mask.get_rect(center=(tennis_ball.x, tennis_ball.y))
+    tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
 
-    screen.blit(player_racket.image_of_new_mask, player_racket_rect)
-    screen.blit(tennis_ball.image_of_new_mask, tennis_ball_rect)
+    #draw mask images
+    #screen.blit(player_racket.mask, (0,0))
+    screen.blit(tennis_ball.image_of_mask, (5,0))
+
+
+    #draw images
+    #screen.blit(player_racket.image, player_racket_rect)
+    player_racket_group.draw(screen)
+    screen.blit(tennis_ball.image, tennis_ball_rect)
+
+    
 
     pygame.draw.circle(screen, 'red', pos, 10)
     
@@ -164,8 +186,7 @@ while run:
     width = tennis_ball.image.get_width()
     height = tennis_ball.image.get_height()
 
-    player_racket.update()
-    tennis_ball.update()
+    
     pygame.display.flip()
 
 
