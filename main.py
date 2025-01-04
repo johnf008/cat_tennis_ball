@@ -46,6 +46,13 @@ class TennisBall(pygame.sprite.Sprite):
         self.image = pygame.image.load("images/tennis_ball.png").convert_alpha()
         self.original_image = self.image
 
+        self.image_mask = pygame.mask.from_surface(self.image)
+        self.image_of_mask = self.image_mask.to_surface()
+
+        self.image_of_new_mask = self.image_of_mask
+
+        self.original_mask_image = self.image_of_mask
+
         #self note: original x and y values are (197, 12)
         self.x = 197
         self.y = 12
@@ -54,11 +61,19 @@ class TennisBall(pygame.sprite.Sprite):
         rotated_image = pygame.transform.rotate(self.original_image, angle)
 
         self.image = rotated_image
+
+        self.image_new_mask = pygame.mask.from_surface(self.image)
+        self.image_of_new_mask = self.image_new_mask.to_surface()
+
     def scaleUp(self, factor):
         self.new_size = self.image.get_size()
 
         bigger_image = pygame.transform.scale_by(self.image, factor)
         self.image = bigger_image
+
+        self.image_new_mask = pygame.mask.from_surface(self.image)
+        self.image_of_new_mask = self.image_new_mask.to_surface()
+
     def scaleDown(self, factor):
         self.image_for_going_back = self.image
 
@@ -66,6 +81,9 @@ class TennisBall(pygame.sprite.Sprite):
 
         smaller_image = pygame.transform.scale_by(self.image_for_going_back, factor)
         self.image = smaller_image
+
+        self.image_new_mask = pygame.mask.from_surface(self.image)
+        self.image_of_new_mask = self.image_new_mask.to_surface()
 
 # Set up screens
 SCREEN_WIDTH = 500
@@ -98,10 +116,10 @@ while run:
     player_racket_rect = player_racket.image_of_new_mask.get_rect(center=(player_racket.x, player_racket.y))
 
     #rotate tennis ball
-    tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
+    tennis_ball_rect = tennis_ball.image_of_new_mask.get_rect(center=(tennis_ball.x, tennis_ball.y))
 
     screen.blit(player_racket.image_of_new_mask, player_racket_rect)
-    screen.blit(tennis_ball.image, tennis_ball_rect)
+    screen.blit(tennis_ball.image_of_new_mask, tennis_ball_rect)
 
     pygame.draw.circle(screen, 'red', pos, 10)
     
