@@ -118,6 +118,31 @@ class TennisBall(pygame.sprite.Sprite):
         #self.image_new_mask = pygame.mask.from_surface(self.image)
         #self.image_of_new_mask = self.image_new_mask.to_surface()
     
+    def move_forward(self, ang_fact):
+        self.y = self.y + 7
+        angle = ang_fact[0] + 4
+
+        tennis_ball.rotate(angle)
+
+        factor = ang_fact[1] + 0.015
+        tennis_ball.scaleUp(factor)
+
+        print("towards")
+
+        return (angle,factor)
+    
+    def move_backward(self, ang_fact):
+        self.y = self.y - 7
+        angle = ang_fact[0] + 4
+
+        tennis_ball.rotate(angle)
+
+        factor = ang_fact[1] - 0.015
+        tennis_ball.scaleDown(factor)
+
+        return((angle, factor))
+
+    
 class CatOpponent(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -176,6 +201,7 @@ circle_test_group.add(circle_test)
 clock = pygame.time.Clock()
 run = True
 angle = 0
+angle_factor = (0, 1)  #angle stored in [0] and scale factor stored in [1]
 forward = False
 backward = True
 factor = 20
@@ -211,10 +237,6 @@ while run:
 
     #circle_test_group.draw(screen)
 
-    
-
-    
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -227,25 +249,13 @@ while run:
         forward = False
         backward = False
     elif forward:
-        tennis_ball.y = tennis_ball.y + 7
-        angle = angle + 4
-
-        tennis_ball.rotate(angle)
-
-        factor = factor + 0.015
-        tennis_ball.scaleUp(factor)
-
         print("towards")
+
+        angle_factor = tennis_ball.move_forward((angle_factor))
     elif not game_over:
-        tennis_ball.y = tennis_ball.y - 7
-        angle = angle + 4
-
-        tennis_ball.rotate(angle)
-
-        factor = factor - 0.015
-        tennis_ball.scaleDown(factor)
-
         print("backwards")
+        
+        angle_factor = tennis_ball.move_backward((angle_factor))
     
     
     if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
