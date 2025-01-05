@@ -70,7 +70,7 @@ class TennisBall(pygame.sprite.Sprite):
         self.original_mask_image = self.image_of_mask
 
         #self note: original x and y values are (197, 12)
-        self.x = 197
+        self.x = 250
         self.y = 12
 
         self.rect = self.image.get_rect(center=(self.x, self.y))
@@ -118,7 +118,18 @@ class TennisBall(pygame.sprite.Sprite):
         #self.image_new_mask = pygame.mask.from_surface(self.image)
         #self.image_of_new_mask = self.image_new_mask.to_surface()
     
-        
+class CatOpponent(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load("images/meme_cat.png").convert_alpha()
+
+        self.x = 250
+        self.y = 55
+
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.rect.center = (self.x, self.y)
+
 
 class RedCircleTest(pygame.sprite.Sprite):
     def __init__(self, color):
@@ -144,18 +155,22 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 player_racket = PlayerRacket()
 tennis_ball = TennisBall()
+meme_cat = CatOpponent()
 
 col = "red"
 circle_test = RedCircleTest(col)
 
 player_racket_group = pygame.sprite.Group()
 tennis_ball_group = pygame.sprite.Group()
+meme_cat_group = pygame.sprite.Group()
 
 circle_test_group = pygame.sprite.Group()
 
 
 player_racket_group.add(player_racket)
 tennis_ball_group.add(tennis_ball)
+meme_cat_group.add(meme_cat)
+
 circle_test_group.add(circle_test)
 
 clock = pygame.time.Clock()
@@ -191,6 +206,8 @@ while run:
     player_racket_group.draw(screen)
    
     tennis_ball_group.draw(screen)
+
+    meme_cat_group.draw(screen)
 
     #circle_test_group.draw(screen)
 
@@ -249,8 +266,8 @@ while run:
     
     pygame.draw.rect(screen, "black", tennis_ball.rect, 1)
 
-    width = tennis_ball.image.get_width()
-    height = tennis_ball.image.get_height()
+    width = meme_cat.image.get_width()
+    height = meme_cat.image.get_height()
 
     circle_test_group.update(col)
 
