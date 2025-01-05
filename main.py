@@ -164,7 +164,7 @@ angle = 0
 forward = False
 backward = True
 factor = 20
-
+game_over = False
 
 while run:
     clock.tick(60)
@@ -205,11 +205,11 @@ while run:
     if tennis_ball.y <= 12:
         forward = True
         factor = 1
-    
-    
         
-    
-    if forward:
+    if game_over:
+        forward = False
+        backward = False
+    elif forward:
         tennis_ball.y = tennis_ball.y + 7
         angle = angle + 4
 
@@ -219,8 +219,7 @@ while run:
         tennis_ball.scaleUp(factor)
 
         print("towards")
-    
-    else:
+    elif not game_over:
         tennis_ball.y = tennis_ball.y - 7
         angle = angle + 4
 
@@ -231,23 +230,33 @@ while run:
 
         print("backwards")
     
+    
     if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
         col = "blue"
-        if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) or pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask):
+        if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) and (not game_over):
             forward = False
             col = "green"
             print("collided at ", tennis_ball.y)
+
+            game_over = False
         else:
             col = "red"
     
-    if tennis_ball.y == 575:
-        forward = 0
+    #no collision
+    if(tennis_ball.y >= 720):
+        game_over = True
+    
+    
     pygame.draw.rect(screen, "black", tennis_ball.rect, 1)
 
     width = tennis_ball.image.get_width()
     height = tennis_ball.image.get_height()
 
     circle_test_group.update(col)
+
+    print("Tennis ball at ", tennis_ball.y)
+    print("Game over is ", game_over)
+    print("Forward is ", forward)
 
     
     pygame.display.flip()
