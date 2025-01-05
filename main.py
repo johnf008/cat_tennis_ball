@@ -12,7 +12,7 @@ class PlayerRacket(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.test_image = pygame.image.load("images/tennis_racket.png").convert_alpha()
         self.x = 250
-        self.y = 700
+        self.y = 720
 
         # return a width and height of an image
         self.size = self.test_image.get_size()
@@ -31,16 +31,20 @@ class PlayerRacket(pygame.sprite.Sprite):
 
     def point_at(self, x, y):
         # calculate distance between racket and mouse
-        x_dist = x - player_racket.x
+        #x_dist = x - player_racket.x
         # -ve because pygame y coordinates increase down screen
-        y_dist = -(y - player_racket.y)
+        #y_dist = -(y - player_racket.y)
 
-        angle = math.degrees(math.atan2(y_dist, x_dist))
+        #angle = math.degrees(math.atan2(y_dist, x_dist))
 
-        rotated_image = pygame.transform.rotate(self.original_image, angle - 90)
-        self.image = rotated_image
+        #rotated_image = pygame.transform.rotate(self.original_image, angle - 90)
 
-        self.rect = self.image.get_rect(center=(self.x, self.y))
+        
+        #self.image = rotated_image
+
+        #self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        self.rect.center = (x, self.y)
 
         self.mask = pygame.mask.from_surface(self.image)
 
@@ -188,7 +192,7 @@ while run:
    
     tennis_ball_group.draw(screen)
 
-    circle_test_group.draw(screen)
+    #circle_test_group.draw(screen)
 
     
 
@@ -202,8 +206,7 @@ while run:
         forward = True
         factor = 1
     
-    if tennis_ball.y > 500:
-        forward = False
+    
         
     
     if forward:
@@ -233,9 +236,12 @@ while run:
         if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) or pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask):
             forward = False
             col = "green"
+            print("collided at ", tennis_ball.y)
         else:
             col = "red"
-      
+    
+    if tennis_ball.y == 575:
+        forward = 0
     pygame.draw.rect(screen, "black", tennis_ball.rect, 1)
 
     width = tennis_ball.image.get_width()
