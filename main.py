@@ -4,8 +4,6 @@ import random
 
 pygame.init()
 
-# create player racket
-
 
 class PlayerRacket(pygame.sprite.Sprite):
     def __init__(self):
@@ -171,16 +169,32 @@ class CatOpponent(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
+    
+    def move(self):
+        self.x = cat_racket.x - 50
+        self.update()
+    
+    def update(self):
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.rect.center = (self.x, self.y)
 
 class CatRacket(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("images/new_cat_racket.png")
+        self.image = pygame.image.load("images/final_cat_racket.png").convert_alpha()
 
         self.x = 260
         self.y = 55
 
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.rect.center = (self.x, self.y)
+    
+    def move(self):
+        self.x = tennis_ball.x
+        self.update()
+    
+    def update(self):
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
 
@@ -299,18 +313,32 @@ while run:
         print("towards")
         
         angle_factor = tennis_ball.move_angle_left((angle_factor))
+        cat_racket.move()
+        meme_cat.move()
+
     elif angle_forward:
         print("towards forward")
 
         angle_factor = tennis_ball.move_forward((angle_factor))
+
+        cat_racket.move()
+        meme_cat.move()
     elif angle_right:
         print("towards right")
 
         angle_factor = tennis_ball.move_angle_right((angle_factor))
+
+        cat_racket.move()
+        meme_cat.move()
+
     elif not game_over:
         print("backwards")
 
         angle_factor = tennis_ball.move_backward((angle_factor))
+
+        cat_racket.move()
+        meme_cat.move()
+
         pos_assign_num = 0
     
     if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
