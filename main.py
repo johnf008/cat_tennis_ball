@@ -1,6 +1,6 @@
 import pygame
 import math
-import time
+import random
 
 pygame.init()
 
@@ -14,7 +14,6 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.x = 250
         self.y = 720
 
-        # return a width and height of an image
         self.size = self.test_image.get_size()
 
         # create an image half bigger than self.image
@@ -27,35 +26,12 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.mask_image = pygame.mask.from_surface(self.image)
         self.mask = pygame.mask.from_surface(self.image)
 
-        #self.original_mask_image = self.mask        
 
-    def point_at(self, x, y):
-        # calculate distance between racket and mouse
-        #x_dist = x - player_racket.x
-        # -ve because pygame y coordinates increase down screen
-        #y_dist = -(y - player_racket.y)
-
-        #angle = math.degrees(math.atan2(y_dist, x_dist))
-
-        #rotated_image = pygame.transform.rotate(self.original_image, angle - 90)
-
-        
-        #self.image = rotated_image
-
-        #self.rect = self.image.get_rect(center=(self.x, self.y))
-
+    def move_racket(self, x):
         self.rect.center = (x, self.y)
 
         self.mask = pygame.mask.from_surface(self.image)
-
-        #self.image_new_mask = pygame.mask.from_surface(self.image)
-        #self.image_of_new_mask = self.image_new_mask.to_surface()
-    def update():
-        position = pygame.mouse.get_pos()
         
-        
-        
-
 class TennisBall(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -73,75 +49,116 @@ class TennisBall(pygame.sprite.Sprite):
         self.x = 250
         self.y = 12
 
+        #angle left stuff
+        self.target_x_1 = 25
+        self.target_y_1 = 720
+        angle_1 = math.atan2(self.target_y_1 - self.y, self.target_x_1 - self.x)
+
+        print("angle in degrees", int(math.degrees(angle_1)))
+
+        self.dx_1 = math.cos(angle_1) * 7
+        self.dy_1 = math.sin(angle_1) * 7
+
+        #angle right stuff
+        self.target_x_2 = 475
+        self.target_y_2 = 720
+        angle_2 = math.atan2(self.target_y_2 - self.y, self.target_x_2 - self.x)
+
+        self.dx_2 = math.cos(angle_2) * 7
+        self.dy_2 = math.sin(angle_2) * 7
+
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.rect.center = (self.x, self.y)
 
         self.mask = pygame.mask.from_surface(self.image)
-        
-    def rotate(self, angle):
-        rotated_image = pygame.transform.rotate(self.original_image, angle)
 
-        self.image = rotated_image
-
-        self.rect = self.image.get_rect(center=(self.x, self.y))
-
-        self.mask = pygame.mask.from_surface(self.image)
-
-        #self.image_new_mask = pygame.mask.from_surface(self.image)
-        #self.image_of_new_mask = self.image_new_mask.to_surface()
-
-    def scaleUp(self, factor):
-        self.new_size = self.image.get_size()
-
-        bigger_image = pygame.transform.scale_by(self.image, factor)
-        self.image = bigger_image
-
-        self.rect = self.image.get_rect(center=(self.x, self.y))
-
-        self.mask = pygame.mask.from_surface(self.image)
-
-        #self.image_new_mask = pygame.mask.from_surface(self.image)
-        #self.image_of_new_mask = self.image_new_mask.to_surface()
-
-    def scaleDown(self, factor):
-        self.image_for_going_back = self.image
-
-        self.new_size = self.image.get_size()
-
-        smaller_image = pygame.transform.scale_by(self.image_for_going_back, factor)
-        self.image = smaller_image
-
-        self.rect = self.image.get_rect(center=(self.x, self.y))
-
-        self.mask = pygame.mask.from_surface(self.image)
-
-        #self.image_new_mask = pygame.mask.from_surface(self.image)
-        #self.image_of_new_mask = self.image_new_mask.to_surface()
+        #declaration of variables in order to calculate the scale of the tennis ball moving around the page
+        self.minimum_y = 12
+        self.maximum_y = 720
+        self.maximum_scale = 2
+        self.minimum_scale = 0.5
+        self.default_scale = 1.0
     
     def move_forward(self, ang_fact):
         self.y = self.y + 7
         angle = ang_fact[0] + 4
 
-        tennis_ball.rotate(angle)
-
         factor = ang_fact[1] + 0.015
-        tennis_ball.scaleUp(factor)
+        tennis_ball.update_scale(angle)
 
         print("towards")
 
         return (angle,factor)
     
     def move_backward(self, ang_fact):
-        self.y = self.y - 7
+        #moving backward stuff
+        self.target_x_back = 250
+        self.target_y_back = 12
+        angle_back = math.atan2(self.target_y_back - self.y, self.target_x_back - self.x)
+
+        self.dx_back = math.cos(angle_back) * 7
+        self.dy_back = math.sin(angle_back) * 7
+
+        self.x += self.dx_back
+        self.y += self.dy_back
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
         angle = ang_fact[0] + 4
 
-        tennis_ball.rotate(angle)
-
-        factor = ang_fact[1] - 0.015
-        tennis_ball.scaleDown(factor)
-
+        factor = ang_fact[1] - 0.016 
+        
+        tennis_ball.update_scale(angle)
         return((angle, factor))
 
+    
+    def move_angle_left(self, ang_fact):
+        self.x = self.x + int(self.dx_1)
+        self.y = self.y + int(self.dy_1)
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+
+        angle = ang_fact[0] + 4
+
+        factor = ang_fact[1] + 0.015
+        tennis_ball.update_scale(angle)
+        
+        return (angle,factor)
+
+    def move_angle_right(self, ang_fact):
+        self.x = self.x + int(self.dx_2)
+        self.y = self.y + int(self.dy_2)
+
+        self.rect.x = int(self.x)
+        self.rect.y = int(self.y)
+        
+        angle = ang_fact[0] + 4
+
+        factor = ang_fact[1] + 0.015
+        tennis_ball.update_scale(angle)
+        
+        return (angle,factor)
+    
+    def update_scale(self, angle):
+        progress_on_window = (self.y - self.minimum_y) / (self.maximum_y - self.minimum_y)
+        self.scale = (self.minimum_scale + progress_on_window)  * (self.maximum_scale - self.minimum_scale)
+
+        new_width = int(self.original_image.get_width() * self.scale)
+        new_height = int(self.original_image.get_height() * self.scale)
+        self.image = pygame.transform.scale(self.original_image, (new_width, new_height))
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        self.mask = pygame.mask.from_surface(self.image)
+        
+        rotated_image = pygame.transform.rotate(self.image, angle)
+
+        self.image = rotated_image
+
+        self.rect = self.image.get_rect(center=(self.x, self.y))
+
+        self.mask = pygame.mask.from_surface(self.image)
     
 class CatOpponent(pygame.sprite.Sprite):
     def __init__(self):
@@ -154,7 +171,6 @@ class CatOpponent(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
-
 
 class RedCircleTest(pygame.sprite.Sprite):
     def __init__(self, color):
@@ -171,8 +187,6 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.rect.center = (pos)
         self.image.fill(color)
         
-    
-
 # Set up screens
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 800
@@ -207,26 +221,24 @@ backward = True
 factor = 20
 game_over = False
 
+pos_assign_num = 0
+angle_left = False
+angle_forward = False
+angle_right = False
+
+
 while run:
     clock.tick(60)
     screen.fill("white")
 
-    
-    # get mouse pos
     pos = pygame.mouse.get_pos()
 
-    player_racket.point_at(pos[0], pos[1])
+    #move tennis racket
+    player_racket.move_racket(pos[0])
 
-    # rotate racket
     player_racket_rect = player_racket.image.get_rect(center=(player_racket.x, player_racket.y))
 
-    #rotate tennis ball
     tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
-
-    #draw mask images
-    #screen.blit(player_racket.mask, (0,0))
-    #screen.blit(tennis_ball.image_of_mask, (5,0))
-
 
     #draw images
     player_racket_group.draw(screen)
@@ -235,33 +247,61 @@ while run:
 
     meme_cat_group.draw(screen)
 
-    #circle_test_group.draw(screen)
+    circle_test_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    if tennis_ball.y <= 12:
-        forward = True
-        factor = 1
+    while tennis_ball.y <= 12:
+        if pos_assign_num == 1:
+            angle_left = True
+            factor = 1
+            break
+
+        elif pos_assign_num == 2:
+            angle_forward = True
+            factor = 1
+            break
+
+        elif pos_assign_num == 3:
+            angle_right = True
+            factor = 1
+            break
+
+        else:
+            factor = 1
+            pos_assign_num = random.randint(1,3)
+        
         
     if game_over:
         forward = False
         backward = False
-    elif forward:
+    elif angle_left:
         print("towards")
+        
+        angle_factor = tennis_ball.move_angle_left((angle_factor))
+    elif angle_forward:
+        print("towards forward")
 
         angle_factor = tennis_ball.move_forward((angle_factor))
+    elif angle_right:
+        print("towards right")
+
+        angle_factor = tennis_ball.move_angle_right((angle_factor))
     elif not game_over:
         print("backwards")
-        
+
         angle_factor = tennis_ball.move_backward((angle_factor))
-    
+        pos_assign_num = 0
     
     if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
         col = "blue"
         if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) and (not game_over):
-            forward = False
+            angle_left = False
+            angle_forward = False
+            angle_right = False
+
             col = "green"
             print("collided at ", tennis_ball.y)
 
@@ -269,22 +309,22 @@ while run:
         else:
             col = "red"
     
-    #no collision
+    #no collision with racket
     if(tennis_ball.y >= 720):
         game_over = True
-    
-    
-    pygame.draw.rect(screen, "black", tennis_ball.rect, 1)
 
     width = meme_cat.image.get_width()
     height = meme_cat.image.get_height()
 
     circle_test_group.update(col)
 
-    print("Tennis ball at ", tennis_ball.y)
+    print("Tennis ball at ", tennis_ball.x, ", ", tennis_ball.y )
     print("Game over is ", game_over)
     print("Forward is ", forward)
-
+    print("Backward is ", backward)
+    print(" ")
+    print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
+    
     
     pygame.display.flip()
 
