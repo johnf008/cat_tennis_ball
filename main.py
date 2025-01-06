@@ -172,6 +172,18 @@ class CatOpponent(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
 
+class CatRacket(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load("images/new_cat_racket.png")
+
+        self.x = 260
+        self.y = 55
+
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.rect.center = (self.x, self.y)
+
 class RedCircleTest(pygame.sprite.Sprite):
     def __init__(self, color):
         pygame.sprite.Sprite.__init__(self)
@@ -195,6 +207,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 player_racket = PlayerRacket()
 tennis_ball = TennisBall()
 meme_cat = CatOpponent()
+cat_racket = CatRacket()
 
 col = "red"
 circle_test = RedCircleTest(col)
@@ -202,6 +215,7 @@ circle_test = RedCircleTest(col)
 player_racket_group = pygame.sprite.Group()
 tennis_ball_group = pygame.sprite.Group()
 meme_cat_group = pygame.sprite.Group()
+cat_racket_group = pygame.sprite.Group()
 
 circle_test_group = pygame.sprite.Group()
 
@@ -209,6 +223,7 @@ circle_test_group = pygame.sprite.Group()
 player_racket_group.add(player_racket)
 tennis_ball_group.add(tennis_ball)
 meme_cat_group.add(meme_cat)
+cat_racket_group.add(cat_racket)
 
 circle_test_group.add(circle_test)
 
@@ -246,6 +261,9 @@ while run:
     tennis_ball_group.draw(screen)
 
     meme_cat_group.draw(screen)
+
+    cat_racket_group.draw(screen)
+    
 
     circle_test_group.draw(screen)
 
