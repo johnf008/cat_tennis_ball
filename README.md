@@ -1,5 +1,9 @@
 ## About this project
+<img width="871" alt="cat_tennis_logo" src="https://github.com/user-attachments/assets/cabb5700-44f1-4fc0-9d6a-d081bbf74118" />
+
 Taking inspiration from the viral tennis cat video, I decided to recreate it using Pygame. You play as the racket and hit the ball back to the cat. 
+
+![image](https://github.com/user-attachments/assets/25083793-ba7e-4ec9-9ad4-7014891792a5)
 
 ### Installation
 
