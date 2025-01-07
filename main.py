@@ -440,7 +440,9 @@ while run:
                 else:
                     pass
             else:
-                pygame.mixer.find_channel().play(player_racket.hit_effect)
+                if not played_sound_already:
+                    pygame.mixer.find_channel().play(player_racket.hit_effect)
+                    played_sound_already = True
 
             game_over = False
         else:
@@ -448,6 +450,7 @@ while run:
     
     #no collision with racket
     if(tennis_ball.y >= 720):
+        played_sound_already = False
         game_over = True
 
     width = meme_cat.image.get_width()
@@ -462,6 +465,7 @@ while run:
     print(" ")
     print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
     print("Mouse pos", pos)
+    print("Played sound already is ", played_sound_already)
     
     
     pygame.display.flip()
