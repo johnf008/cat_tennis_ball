@@ -310,7 +310,7 @@ async def main():
 
 
     click = False
-    title_image = pygame.image.load("cat_tennis_logo.png")
+    title_image = pygame.image.load("menu_screen/cat_tennis_logo.png")
     size_of_title_image = title_image.get_size()
     
     while run:
