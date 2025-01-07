@@ -1,6 +1,7 @@
 import pygame
 import math
 import random
+import time
 
 pygame.init()
 
@@ -216,7 +217,32 @@ class RedCircleTest(pygame.sprite.Sprite):
         pos = pygame.mouse.get_pos()
         self.rect.center = (pos)
         self.image.fill(color)
-        
+
+def starting_menu(c):
+    screen.fill((0,0,0))
+
+    pos = pygame.mouse.get_pos()
+
+    button_1 = pygame.Rect(50, 100, 200, 50)
+
+    click = c
+
+    if button_1.collidepoint((pos[0], pos[1])):
+        if click:
+            return False
+    
+    click = False
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    
+    pygame.draw.rect(screen, (255, 0, 0), button_1)
+    pygame.display.update()
+    return True
+
+    
+
+
 # Set up screens
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 800
@@ -259,12 +285,27 @@ angle_left = False
 angle_forward = False
 angle_right = False
 
+startup_menu = True
+
+
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 pygame.mixer.music.play(loops=-1)
 
+click = False
 
 while run:
+
     clock.tick(60)
+    while startup_menu:
+        status = starting_menu(click)
+        
+        startup_menu = status
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                click = True
+
+    
     screen.fill("white")
 
     pos = pygame.mouse.get_pos()
@@ -319,12 +360,38 @@ while run:
         backward = False
 
         pygame.mixer.music.stop()
+        startup_menu = True
+        click = False
+
+        while startup_menu:
+            status = starting_menu(click)
+            startup_menu = status
+
+            print(status)
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    click = True
+
+        #The following code should be triggered when the restart button is pressed (i hope D:)
+        game_over = False
+
+        tennis_ball.x = 250
+        tennis_ball.y = 12
+
+        meme_cat.x = 250
+        meme_cat.y = 55
+
+        cat_racket.x = 260
+        cat_racket.y = 55
+
     elif angle_left:
         print("towards")
         
         angle_factor = tennis_ball.move_angle_left((angle_factor))
         cat_racket.move()
         meme_cat.move()
+
+        played_sound_already = False
 
     elif angle_forward:
         print("towards forward")
@@ -333,6 +400,8 @@ while run:
 
         cat_racket.move()
         meme_cat.move()
+
+        played_sound_already = False
     elif angle_right:
         print("towards right")
 
@@ -340,6 +409,8 @@ while run:
 
         cat_racket.move()
         meme_cat.move()
+
+        played_sound_already = False
 
     elif not game_over:
         print("backwards")
@@ -361,9 +432,15 @@ while run:
             col = "green"
             print("collided at ", tennis_ball.y)
 
-            player_racket.hit_effect.play()
-            
-            pygame.mixer.find_channel().play(player_racket.hit_effect)
+            if(tennis_ball.y > 576):
+                tennis_ball.y = 565
+                if not played_sound_already:
+                    pygame.mixer.find_channel().play(player_racket.hit_effect)
+                    played_sound_already = True
+                else:
+                    pass
+            else:
+                pygame.mixer.find_channel().play(player_racket.hit_effect)
 
             game_over = False
         else:
@@ -384,6 +461,7 @@ while run:
     print("Backward is ", backward)
     print(" ")
     print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
+    print("Mouse pos", pos)
     
     
     pygame.display.flip()
