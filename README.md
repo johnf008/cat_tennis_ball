@@ -4,11 +4,11 @@ Taking inspiration from the viral tennis cat video, I decided to recreate it usi
 ## Installation
 
 1. Install pygame
-   sh```
+   ```sh
    pip install pygame
    ```
 2. Clone the repo
-   sh```
+   ```sh
    git clone https://github.com/johnf008/cat_tennis_ball.git
    ```
 3. Ensure you have an up-to-date version of Python
