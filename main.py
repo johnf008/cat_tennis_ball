@@ -55,8 +55,6 @@ class TennisBall(pygame.sprite.Sprite):
         self.target_y_1 = 720
         angle_1 = math.atan2(self.target_y_1 - self.y, self.target_x_1 - self.x)
 
-        print("angle in degrees", int(math.degrees(angle_1)))
-
         self.dx_1 = math.cos(angle_1) * 7
         self.dy_1 = math.sin(angle_1) * 7
 
@@ -86,8 +84,6 @@ class TennisBall(pygame.sprite.Sprite):
 
         factor = ang_fact[1] + 0.015
         tennis_ball.update_scale(angle)
-
-        print("towards")
 
         return (angle,factor)
     
@@ -218,7 +214,7 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.rect.center = (pos)
         self.image.fill(color)
 
-def starting_menu(play_again):
+def starting_menu(play_again, score):
 
     pos = pygame.mouse.get_pos()
 
@@ -238,6 +234,7 @@ def starting_menu(play_again):
     
     if play_again:
         draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400)
+        draw_text(score, text_font, (255, 255, 255), 200, 600)
         pygame.draw.rect(screen, (255, 0, 0), button_1)
         draw_text("PLAY AGAIN!" ,text_font, (0,0,0), (button_1.centerx - 57),(button_1.centery - 10))
     else:
@@ -309,32 +306,34 @@ score = 0
 play_again_que = False
 
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
-pygame.mixer.music.play(loops=-1)
+
 
 click = False
 title_image = pygame.image.load("cat_tennis_logo.png")
 size_of_title_image = title_image.get_size()
 while run:
+    score_text = "Score: " + str(score)
 
     clock.tick(60)
     
     while startup_menu:
-
+        clock.tick(60)
         pygame.display.update()
 
-        screen.fill("black")
+        screen.fill("blue")
         
         new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
         screen.blit(new_image, (-180,-60))
 
-        status = starting_menu(play_again_que)
+        status = starting_menu(play_again_que, str(score))
         startup_menu = status
 
-        
-        
+        if startup_menu:
+            pygame.mixer.music.play(loops=-1)
+
     screen.fill("white")
 
-    score_text = "Score: " + str(score)
+    
 
     draw_text(score_text ,text_font, (0,0,0), 50, 100)
 
@@ -357,7 +356,7 @@ while run:
     cat_racket_group.draw(screen)
     
     
-    circle_test_group.draw(screen)
+    #circle_test_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -395,10 +394,12 @@ while run:
         click = False
 
         while startup_menu:
-            status = starting_menu(play_again_que)
+            clock.tick(60)
+            text_temp = "Final score: " + str(score)
+            status = starting_menu(play_again_que, text_temp)
             startup_menu = status
 
-            screen.fill("black")
+            screen.fill("blue")
         
             new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
             screen.blit(new_image, (-180,-60))
@@ -419,7 +420,6 @@ while run:
         pygame.mixer.music.play()
 
     elif angle_left:
-        print("towards")
         
         angle_factor = tennis_ball.move_angle_left((angle_factor))
         cat_racket.move()
@@ -428,8 +428,7 @@ while run:
         played_sound_already = False
 
     elif angle_forward:
-        print("towards forward")
-
+        
         angle_factor = tennis_ball.move_forward((angle_factor))
 
         cat_racket.move()
@@ -437,7 +436,7 @@ while run:
 
         played_sound_already = False
     elif angle_right:
-        print("towards right")
+        
 
         angle_factor = tennis_ball.move_angle_right((angle_factor))
 
@@ -447,8 +446,7 @@ while run:
         played_sound_already = False
 
     elif not game_over:
-        print("backwards")
-
+        
         angle_factor = tennis_ball.move_backward((angle_factor))
 
         cat_racket.move()
@@ -464,7 +462,6 @@ while run:
             angle_right = False
 
             col = "green"
-            print("collided at ", tennis_ball.y)
 
             if(tennis_ball.y > 576):
                 tennis_ball.y = 565
@@ -494,6 +491,8 @@ while run:
 
     circle_test_group.update(col)
 
+    """
+    test case statements:
     print("Tennis ball at ", tennis_ball.x, ", ", tennis_ball.y )
     print("Game over is ", game_over)
     print("Forward is ", forward)
@@ -502,7 +501,7 @@ while run:
     print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
     print("Mouse pos", pos)
     print("Played sound already is ", played_sound_already)
-    
+    """
     
     pygame.display.flip()
     pygame.display.update()
