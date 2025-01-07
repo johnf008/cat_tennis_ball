@@ -24,6 +24,8 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.mask_image = pygame.mask.from_surface(self.image)
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.hit_effect = pygame.mixer.Sound("music_and_sounds/player_hit_sound.MP3")
+
 
     def move_racket(self, x):
         self.rect.center = (x, self.y)
@@ -189,6 +191,8 @@ class CatRacket(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
+
+        self.hit_sound = pygame.mixer.Sound("music_and_sounds/cat_hit_sound.mp3")
     
     def move(self):
         self.x = tennis_ball.x
@@ -255,6 +259,9 @@ angle_left = False
 angle_forward = False
 angle_right = False
 
+pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
+pygame.mixer.music.play(loops=-1)
+
 
 while run:
     clock.tick(60)
@@ -304,11 +311,14 @@ while run:
         else:
             factor = 1
             pos_assign_num = random.randint(1,3)
+            pygame.mixer.find_channel().play(cat_racket.hit_sound)
         
         
     if game_over:
         forward = False
         backward = False
+
+        pygame.mixer.music.stop()
     elif angle_left:
         print("towards")
         
@@ -350,6 +360,10 @@ while run:
 
             col = "green"
             print("collided at ", tennis_ball.y)
+
+            player_racket.hit_effect.play()
+            
+            pygame.mixer.find_channel().play(player_racket.hit_effect)
 
             game_over = False
         else:
