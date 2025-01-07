@@ -30,5 +30,12 @@ I used many YouTube tutorials to help create this game, so some of this code may
 
 ### Credits
 Here are the links to the resources I used to create this project: 
+https://www.amazon.com/Racquet-Beginner-Competition-Training-Student/dp/B0CTMRZP3J
+https://www.abposters.com/new-tennis-ball-isolated-on-transparent-background-png-file-f564007240
+https://i.kym-cdn.com/entries/icons/original/000/045/878/tenniscat.jpg
+
+https://www.youtube.com/watch?v=Skszb8Gvhwo
+(please don't sue Nintendo D:)
+
 
 
