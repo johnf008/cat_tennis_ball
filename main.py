@@ -219,7 +219,6 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.image.fill(color)
 
 def starting_menu(c):
-    screen.fill((0,0,0))
 
     pos = pygame.mouse.get_pos()
 
@@ -237,6 +236,8 @@ def starting_menu(c):
             pygame.quit()
     
     pygame.draw.rect(screen, (255, 0, 0), button_1)
+
+    
     pygame.display.update()
 
     return True
@@ -304,18 +305,26 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 pygame.mixer.music.play(loops=-1)
 
 click = False
-
+title_image = pygame.image.load("cat_tennis_logo.png")
+size_of_title_image = title_image.get_size()
 while run:
 
     clock.tick(60)
+    
     while startup_menu:
-        status = starting_menu(click)
         
+        screen.fill("black")
+        
+        new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
+        screen.blit(new_image, (-180,100))
+
+        status = starting_menu(click)
         startup_menu = status
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
+        pygame.display.update()
         
     screen.fill("white")
 
@@ -339,7 +348,7 @@ while run:
 
     cat_racket_group.draw(screen)
     
-
+    
     circle_test_group.draw(screen)
 
     for event in pygame.event.get():
