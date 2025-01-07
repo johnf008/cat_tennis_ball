@@ -238,8 +238,15 @@ def starting_menu(c):
     
     pygame.draw.rect(screen, (255, 0, 0), button_1)
     pygame.display.update()
+
     return True
 
+
+def draw_text(text, font, text_col, x, y, score):
+    text = text + str(score)
+    img = font.render(text, True, text_col)
+
+    screen.blit(img, (x,y))
     
 
 
@@ -287,6 +294,11 @@ angle_right = False
 
 startup_menu = True
 
+only_once = False
+
+text_font = pygame.font.SysFont(None, 30)
+score = 0
+
 
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 pygame.mixer.music.play(loops=-1)
@@ -304,9 +316,10 @@ while run:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 click = True
-
-    
+        
     screen.fill("white")
+
+    draw_text("Score: ",text_font, (0,0,0), 50, 100, score)
 
     pos = pygame.mouse.get_pos()
 
@@ -437,12 +450,14 @@ while run:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
+                    score += 1
                 else:
                     pass
             else:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
+                    score += 1
 
             game_over = False
         else:
@@ -469,6 +484,7 @@ while run:
     
     
     pygame.display.flip()
+    pygame.display.update()
 
 
 pygame.quit()
