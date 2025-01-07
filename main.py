@@ -218,24 +218,31 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.rect.center = (pos)
         self.image.fill(color)
 
-def starting_menu(c):
+def starting_menu(play_again):
 
     pos = pygame.mouse.get_pos()
 
-    button_1 = pygame.Rect(50, 100, 200, 50)
+    button_1 = pygame.Rect(150, 500, 200, 50)
 
-    click = c
+    click = False
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            click = True
 
     if button_1.collidepoint((pos[0], pos[1])):
         if click:
             return False
     
-    click = False
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-    
-    pygame.draw.rect(screen, (255, 0, 0), button_1)
+    if play_again:
+        draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400)
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        draw_text("PLAY AGAIN!" ,text_font, (0,0,0), (button_1.centerx - 57),(button_1.centery - 10))
+    else:
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        draw_text("PLAY!" ,text_font, (0,0,0), (button_1.centerx - 27),(button_1.centery - 10))
 
     
     pygame.display.update()
@@ -243,8 +250,7 @@ def starting_menu(c):
     return True
 
 
-def draw_text(text, font, text_col, x, y, score):
-    text = text + str(score)
+def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
 
     screen.blit(img, (x,y))
@@ -300,6 +306,7 @@ only_once = False
 text_font = pygame.font.SysFont(None, 30)
 score = 0
 
+play_again_que = False
 
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 pygame.mixer.music.play(loops=-1)
@@ -312,23 +319,24 @@ while run:
     clock.tick(60)
     
     while startup_menu:
-        
+
+        pygame.display.update()
+
         screen.fill("black")
         
         new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
-        screen.blit(new_image, (-180,100))
+        screen.blit(new_image, (-180,-60))
 
-        status = starting_menu(click)
+        status = starting_menu(play_again_que)
         startup_menu = status
 
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                click = True
-        pygame.display.update()
+        
         
     screen.fill("white")
 
-    draw_text("Score: ",text_font, (0,0,0), 50, 100, score)
+    score_text = "Score: " + str(score)
+
+    draw_text(score_text ,text_font, (0,0,0), 50, 100)
 
     pos = pygame.mouse.get_pos()
 
@@ -380,20 +388,20 @@ while run:
     if game_over:
         forward = False
         backward = False
+        play_again_que = True
 
         pygame.mixer.music.stop()
         startup_menu = True
         click = False
 
         while startup_menu:
-            status = starting_menu(click)
+            status = starting_menu(play_again_que)
             startup_menu = status
 
-            print(status)
-            for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    click = True
-
+            screen.fill("black")
+        
+            new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
+            screen.blit(new_image, (-180,-60))
         #The following code should be triggered when the restart button is pressed (i hope D:)
         game_over = False
 
@@ -405,6 +413,10 @@ while run:
 
         cat_racket.x = 260
         cat_racket.y = 55
+
+        score = 0
+
+        pygame.mixer.music.play()
 
     elif angle_left:
         print("towards")
