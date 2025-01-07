@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 import asyncio
+import sys
 pygame.init()
 
 
@@ -24,7 +25,7 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.mask_image = pygame.mask.from_surface(self.image)
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.hit_effect = pygame.mixer.Sound("music_and_sounds/player_hit_sound.MP3")
+        self.hit_effect = pygame.mixer.Sound("music_and_sounds/player_hit_sound.ogg")
 
 
     def move_racket(self, x):
@@ -188,7 +189,7 @@ class CatRacket(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
 
-        self.hit_sound = pygame.mixer.Sound("music_and_sounds/cat_hit_sound.mp3")
+        self.hit_sound = pygame.mixer.Sound("music_and_sounds/cat_hit_sound.ogg")
     
     def move(self, tennis_ball):
         self.x = tennis_ball.x
@@ -305,7 +306,7 @@ async def main():
 
     play_again_que = False
 
-    pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
+    pygame.mixer.music.load("music_and_sounds/wii_music.ogg")
 
 
     click = False
@@ -503,6 +504,8 @@ async def main():
         print("Mouse pos", pos)
         print("Played sound already is ", played_sound_already)
         """
+
+
         
         pygame.display.flip()
         pygame.display.update()
