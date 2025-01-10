@@ -1,8 +1,8 @@
 import pygame
 import math
 import random
-import asyncio
-import sys
+import time
+
 pygame.init()
 
 
@@ -25,7 +25,7 @@ class PlayerRacket(pygame.sprite.Sprite):
         self.mask_image = pygame.mask.from_surface(self.image)
         self.mask = pygame.mask.from_surface(self.image)
 
-        self.hit_effect = pygame.mixer.Sound("music_and_sounds/player_hit_sound.ogg")
+        self.hit_effect = pygame.mixer.Sound("music_and_sounds/player_hit_sound.MP3")
 
 
     def move_racket(self, x):
@@ -78,7 +78,7 @@ class TennisBall(pygame.sprite.Sprite):
         self.minimum_scale = 0.5
         self.default_scale = 1.0
     
-    def move_forward(self, ang_fact, tennis_ball):
+    def move_forward(self, ang_fact):
         self.y = self.y + 7
         angle = ang_fact[0] + 4
 
@@ -87,7 +87,7 @@ class TennisBall(pygame.sprite.Sprite):
 
         return (angle,factor)
     
-    def move_backward(self, ang_fact, tennis_ball):
+    def move_backward(self, ang_fact):
         #moving backward stuff
         self.target_x_back = 250
         self.target_y_back = 12
@@ -110,7 +110,7 @@ class TennisBall(pygame.sprite.Sprite):
         return((angle, factor))
 
     
-    def move_angle_left(self, ang_fact, tennis_ball):
+    def move_angle_left(self, ang_fact):
         self.x = self.x + int(self.dx_1)
         self.y = self.y + int(self.dy_1)
 
@@ -124,7 +124,7 @@ class TennisBall(pygame.sprite.Sprite):
         
         return (angle,factor)
 
-    def move_angle_right(self, ang_fact, tennis_ball):
+    def move_angle_right(self, ang_fact):
         self.x = self.x + int(self.dx_2)
         self.y = self.y + int(self.dy_2)
 
@@ -169,7 +169,7 @@ class CatOpponent(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
     
-    def move(self, cat_racket):
+    def move(self):
         self.x = cat_racket.x - 50
         self.update()
     
@@ -189,9 +189,9 @@ class CatRacket(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
 
-        self.hit_sound = pygame.mixer.Sound("music_and_sounds/cat_hit_sound.ogg")
+        self.hit_sound = pygame.mixer.Sound("music_and_sounds/cat_hit_sound.mp3")
     
-    def move(self, tennis_ball):
+    def move(self):
         self.x = tennis_ball.x
         self.update()
     
@@ -214,7 +214,7 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.rect.center = (pos)
         self.image.fill(color)
 
-def starting_menu(play_again, score, text_font,screen):
+def starting_menu(play_again, score):
 
     pos = pygame.mouse.get_pos()
 
@@ -233,13 +233,13 @@ def starting_menu(play_again, score, text_font,screen):
             return False
     
     if play_again:
-        draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400, screen)
-        draw_text(score, text_font, (255, 255, 255), 200, 600, screen)
+        draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400)
+        draw_text(score, text_font, (255, 255, 255), 200, 600)
         pygame.draw.rect(screen, (255, 0, 0), button_1)
-        draw_text("PLAY AGAIN!" ,text_font, (0,0,0), (button_1.centerx - 57),(button_1.centery - 10), screen)
+        draw_text("PLAY AGAIN!" ,text_font, (0,0,0), (button_1.centerx - 57),(button_1.centery - 10))
     else:
         pygame.draw.rect(screen, (255, 0, 0), button_1)
-        draw_text("PLAY!" ,text_font, (0,0,0), (button_1.centerx - 27),(button_1.centery - 10), screen)
+        draw_text("PLAY!" ,text_font, (0,0,0), (button_1.centerx - 27),(button_1.centery - 10))
 
     
     pygame.display.update()
@@ -247,271 +247,264 @@ def starting_menu(play_again, score, text_font,screen):
     return True
 
 
-def draw_text(text, font, text_col, x, y, screen):
+def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
 
     screen.blit(img, (x,y))
     
 
 
-async def main():
-    # Set up screens
-    SCREEN_WIDTH = 500
-    SCREEN_HEIGHT = 800
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# Set up screens
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 800
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
-    player_racket = PlayerRacket()
-    tennis_ball = TennisBall()
-    meme_cat = CatOpponent()
-    cat_racket = CatRacket()
+player_racket = PlayerRacket()
+tennis_ball = TennisBall()
+meme_cat = CatOpponent()
+cat_racket = CatRacket()
 
-    col = "red"
-    circle_test = RedCircleTest(col)
+col = "red"
+circle_test = RedCircleTest(col)
 
-    player_racket_group = pygame.sprite.Group()
-    tennis_ball_group = pygame.sprite.Group()
-    meme_cat_group = pygame.sprite.Group()
-    cat_racket_group = pygame.sprite.Group()
+player_racket_group = pygame.sprite.Group()
+tennis_ball_group = pygame.sprite.Group()
+meme_cat_group = pygame.sprite.Group()
+cat_racket_group = pygame.sprite.Group()
 
-    circle_test_group = pygame.sprite.Group()
-
-
-    player_racket_group.add(player_racket)
-    tennis_ball_group.add(tennis_ball)
-    meme_cat_group.add(meme_cat)
-    cat_racket_group.add(cat_racket)
-
-    circle_test_group.add(circle_test)
-
-    clock = pygame.time.Clock()
-    run = True
-    angle = 0
-    angle_factor = (0, 1)  #angle stored in [0] and scale factor stored in [1]
-    forward = False
-    backward = True
-    factor = 20
-    game_over = False
-
-    pos_assign_num = 0
-    angle_left = False
-    angle_forward = False
-    angle_right = False
-
-    startup_menu = True
-
-    only_once = False
-
-    text_font = pygame.font.SysFont(None, 30)
-    score = 0
-
-    play_again_que = False
-
-    pygame.mixer.music.load("music_and_sounds/wii_music.ogg")
+circle_test_group = pygame.sprite.Group()
 
 
-    click = False
-    title_image = pygame.image.load("menu_screen/cat_tennis_logo.png")
-    size_of_title_image = title_image.get_size()
+player_racket_group.add(player_racket)
+tennis_ball_group.add(tennis_ball)
+meme_cat_group.add(meme_cat)
+cat_racket_group.add(cat_racket)
+
+circle_test_group.add(circle_test)
+
+clock = pygame.time.Clock()
+run = True
+angle = 0
+angle_factor = (0, 1)  #angle stored in [0] and scale factor stored in [1]
+forward = False
+backward = True
+factor = 20
+game_over = False
+
+pos_assign_num = 0
+angle_left = False
+angle_forward = False
+angle_right = False
+
+startup_menu = True
+
+only_once = False
+
+text_font = pygame.font.SysFont(None, 30)
+score = 0
+
+play_again_que = False
+
+pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
+
+
+click = False
+title_image = pygame.image.load("cat_tennis_logo.png")
+size_of_title_image = title_image.get_size()
+while run:
+    score_text = "Score: " + str(score)
+
+    clock.tick(60)
     
-    while run:
-        score_text = "Score: " + str(score)
-
+    while startup_menu:
         clock.tick(60)
+        pygame.display.update()
+
+        screen.fill("blue")
         
+        new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
+        screen.blit(new_image, (-180,-60))
+
+        status = starting_menu(play_again_que, str(score))
+        startup_menu = status
+
+        if startup_menu:
+            pygame.mixer.music.play(loops=-1)
+
+    screen.fill("white")
+
+    
+
+    draw_text(score_text ,text_font, (0,0,0), 50, 100)
+
+    pos = pygame.mouse.get_pos()
+
+    #move tennis racket
+    player_racket.move_racket(pos[0])
+
+    player_racket_rect = player_racket.image.get_rect(center=(player_racket.x, player_racket.y))
+
+    tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
+
+    #draw images
+    player_racket_group.draw(screen)
+   
+    tennis_ball_group.draw(screen)
+
+    meme_cat_group.draw(screen)
+
+    cat_racket_group.draw(screen)
+    
+    
+    #circle_test_group.draw(screen)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+
+    while tennis_ball.y <= 12:
+        if pos_assign_num == 1:
+            angle_left = True
+            factor = 1
+            break
+
+        elif pos_assign_num == 2:
+            angle_forward = True
+            factor = 1
+            break
+
+        elif pos_assign_num == 3:
+            angle_right = True
+            factor = 1
+            break
+
+        else:
+            factor = 1
+            pos_assign_num = random.randint(1,3)
+            pygame.mixer.find_channel().play(cat_racket.hit_sound)
+        
+        
+    if game_over:
+        forward = False
+        backward = False
+        play_again_que = True
+
+        pygame.mixer.music.stop()
+        startup_menu = True
+        click = False
+
         while startup_menu:
             clock.tick(60)
-            pygame.display.update()
-
-            screen.fill("blue")
-            
-            new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
-            screen.blit(new_image, (-180,-60))
-
-            status = starting_menu(play_again_que, str(score), text_font, screen)
+            text_temp = "Final score: " + str(score)
+            status = starting_menu(play_again_que, text_temp)
             startup_menu = status
 
-            if startup_menu:
-                pygame.mixer.music.play(loops=-1)
+            screen.fill("blue")
+        
+            new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
+            screen.blit(new_image, (-180,-60))
+        #The following code should be triggered when the restart button is pressed (i hope D:)
+        game_over = False
 
-        screen.fill("white")
+        tennis_ball.x = 250
+        tennis_ball.y = 12
 
+        meme_cat.x = 250
+        meme_cat.y = 55
+
+        cat_racket.x = 260
+        cat_racket.y = 55
+
+        score = 0
+
+        pygame.mixer.music.play()
+
+    elif angle_left:
+        
+        angle_factor = tennis_ball.move_angle_left((angle_factor))
+        cat_racket.move()
+        meme_cat.move()
+
+        played_sound_already = False
+
+    elif angle_forward:
+        
+        angle_factor = tennis_ball.move_forward((angle_factor))
+
+        cat_racket.move()
+        meme_cat.move()
+
+        played_sound_already = False
+    elif angle_right:
         
 
-        draw_text(score_text ,text_font, (0,0,0), 50, 100, screen)
+        angle_factor = tennis_ball.move_angle_right((angle_factor))
 
-        pos = pygame.mouse.get_pos()
+        cat_racket.move()
+        meme_cat.move()
 
-        #move tennis racket
-        player_racket.move_racket(pos[0])
+        played_sound_already = False
 
-        player_racket_rect = player_racket.image.get_rect(center=(player_racket.x, player_racket.y))
+    elif not game_over:
+        
+        angle_factor = tennis_ball.move_backward((angle_factor))
 
-        tennis_ball_rect = tennis_ball.image.get_rect(center=(tennis_ball.x, tennis_ball.y))
+        cat_racket.move()
+        meme_cat.move()
 
-        #draw images
-        player_racket_group.draw(screen)
+        pos_assign_num = 0
     
-        tennis_ball_group.draw(screen)
+    if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
+        col = "blue"
+        if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) and (not game_over):
+            angle_left = False
+            angle_forward = False
+            angle_right = False
 
-        meme_cat_group.draw(screen)
+            col = "green"
 
-        cat_racket_group.draw(screen)
-        
-        
-        #circle_test_group.draw(screen)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-        while tennis_ball.y <= 12:
-            if pos_assign_num == 1:
-                angle_left = True
-                factor = 1
-                break
-
-            elif pos_assign_num == 2:
-                angle_forward = True
-                factor = 1
-                break
-
-            elif pos_assign_num == 3:
-                angle_right = True
-                factor = 1
-                break
-
-            else:
-                factor = 1
-                pos_assign_num = random.randint(1,3)
-                pygame.mixer.find_channel().play(cat_racket.hit_sound)
-            
-            
-        if game_over:
-            forward = False
-            backward = False
-            play_again_que = True
-
-            pygame.mixer.music.stop()
-            startup_menu = True
-            click = False
-
-            while startup_menu:
-                clock.tick(60)
-                text_temp = "Final score: " + str(score)
-                status = starting_menu(play_again_que, text_temp, text_font, screen)
-                startup_menu = status
-
-                screen.fill("blue")
-            
-                new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
-                screen.blit(new_image, (-180,-60))
-            #The following code should be triggered when the restart button is pressed (i hope D:)
-            game_over = False
-
-            tennis_ball.x = 250
-            tennis_ball.y = 12
-
-            meme_cat.x = 250
-            meme_cat.y = 55
-
-            cat_racket.x = 260
-            cat_racket.y = 55
-
-            score = 0
-
-            pygame.mixer.music.play()
-
-        elif angle_left:
-            
-            angle_factor = tennis_ball.move_angle_left((angle_factor), tennis_ball)
-            cat_racket.move(tennis_ball)
-            meme_cat.move(cat_racket)
-
-            played_sound_already = False
-
-        elif angle_forward:
-            
-            angle_factor = tennis_ball.move_forward((angle_factor), tennis_ball)
-
-            cat_racket.move(tennis_ball)
-            meme_cat.move(cat_racket)
-
-            played_sound_already = False
-        elif angle_right:
-            
-
-            angle_factor = tennis_ball.move_angle_right((angle_factor), tennis_ball)
-
-            cat_racket.move(tennis_ball)
-            meme_cat.move(cat_racket)
-
-            played_sound_already = False
-
-        elif not game_over:
-            
-            angle_factor = tennis_ball.move_backward((angle_factor), tennis_ball)
-
-            cat_racket.move(tennis_ball)
-            meme_cat.move(cat_racket)
-
-            pos_assign_num = 0
-        
-        if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False):
-            col = "blue"
-            if pygame.sprite.spritecollide(player_racket, tennis_ball_group, False, pygame.sprite.collide_mask) and (not game_over):
-                angle_left = False
-                angle_forward = False
-                angle_right = False
-
-                col = "green"
-
-                if(tennis_ball.y > 576):
-                    tennis_ball.y = 565
-                    if not played_sound_already:
-                        pygame.mixer.find_channel().play(player_racket.hit_effect)
-                        played_sound_already = True
-                        score += 1
-                    else:
-                        pass
+            if(tennis_ball.y > 576):
+                tennis_ball.y = 565
+                if not played_sound_already:
+                    pygame.mixer.find_channel().play(player_racket.hit_effect)
+                    played_sound_already = True
+                    score += 1
                 else:
-                    if not played_sound_already:
-                        pygame.mixer.find_channel().play(player_racket.hit_effect)
-                        played_sound_already = True
-                        score += 1
-
-                game_over = False
+                    pass
             else:
-                col = "red"
-        
-        #no collision with racket
-        if(tennis_ball.y >= 720):
-            played_sound_already = False
-            game_over = True
+                if not played_sound_already:
+                    pygame.mixer.find_channel().play(player_racket.hit_effect)
+                    played_sound_already = True
+                    score += 1
 
-        width = meme_cat.image.get_width()
-        height = meme_cat.image.get_height()
+            game_over = False
+        else:
+            col = "red"
+    
+    #no collision with racket
+    if(tennis_ball.y >= 720):
+        played_sound_already = False
+        game_over = True
 
-        circle_test_group.update(col)
+    width = meme_cat.image.get_width()
+    height = meme_cat.image.get_height()
 
-        """
-        test case statements:
-        print("Tennis ball at ", tennis_ball.x, ", ", tennis_ball.y )
-        print("Game over is ", game_over)
-        print("Forward is ", forward)
-        print("Backward is ", backward)
-        print(" ")
-        print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
-        print("Mouse pos", pos)
-        print("Played sound already is ", played_sound_already)
-        """
+    circle_test_group.update(col)
+
+    """
+    test case statements:
+    print("Tennis ball at ", tennis_ball.x, ", ", tennis_ball.y )
+    print("Game over is ", game_over)
+    print("Forward is ", forward)
+    print("Backward is ", backward)
+    print(" ")
+    print("Angle, factor: ", angle_factor[0], " ", angle_factor[1])
+    print("Mouse pos", pos)
+    print("Played sound already is ", played_sound_already)
+    """
+    
+    pygame.display.flip()
+    pygame.display.update()
 
 
-        
-        pygame.display.flip()
-        pygame.display.update()
-        await asyncio.sleep(0)
-
-
-    pygame.quit()
-
-asyncio.run(main())
+pygame.quit()
