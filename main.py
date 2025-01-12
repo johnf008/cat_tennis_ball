@@ -228,20 +228,28 @@ def starting_menu(play_again, score):
         if event.type == pygame.MOUSEBUTTONDOWN:
             click = True
 
-    if button_1.collidepoint((pos[0], pos[1])):
-        if click:
-            return False
-    
+    again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
+    start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
     if play_again:
         draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400)
         draw_text(score, text_font, (255, 255, 255), 200, 600)
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        draw_text("PLAY AGAIN!" ,text_font, (0,0,0), (button_1.centerx - 57),(button_1.centery - 10))
-    else:
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        draw_text("PLAY!" ,text_font, (0,0,0), (button_1.centerx - 27),(button_1.centery - 10))
-
     
+        screen.blit(again_button, (100,500))
+    else:
+        screen.blit(start_button, (100,500))
+
+    start_button_rect = start_button.get_rect(topleft = (100, 500))
+    again_button_rect = again_button.get_rect(topleft = (100, 500))
+    
+    if start_button_rect.collidepoint(pos) or again_button_rect.collidepoint(pos):
+        circle_test.update("green")
+        if click:
+            return False
+    """"
+    if start_button.collidepoint((pos[0], pos[1])) or again_button.collidepoint((pos[0], pos[1])):
+        if click:
+            return False
+    """
     pygame.display.update()
 
     return True
@@ -309,10 +317,12 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 
 
 click = False
-title_image = pygame.image.load("cat_tennis_logo.png")
+title_image = pygame.image.load("menu_screen/cat_tennis_logo.png")
+score_image = pygame.image.load("images/score_logo.png")
 size_of_title_image = title_image.get_size()
+
 while run:
-    score_text = "Score: " + str(score)
+    score_text = str(score)
 
     clock.tick(60)
     
@@ -328,14 +338,19 @@ while run:
         status = starting_menu(play_again_que, str(score))
         startup_menu = status
 
+        circle_test_group.draw(screen)
+        circle_test_group.update(col)
+
+        print(str(startup_menu))
+
         if startup_menu:
             pygame.mixer.music.play(loops=-1)
 
     screen.fill("white")
 
     
-
-    draw_text(score_text ,text_font, (0,0,0), 50, 100)
+    screen.blit(score_image, (-75,100))
+    draw_text(score_text ,text_font, (0,0,0), 70, 200)
 
     pos = pygame.mouse.get_pos()
 
@@ -355,8 +370,6 @@ while run:
 
     cat_racket_group.draw(screen)
     
-    
-    #circle_test_group.draw(screen)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
