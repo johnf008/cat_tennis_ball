@@ -215,6 +215,9 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.image.fill(color)
 
 def starting_menu(play_again, score):
+    background = pygame.image.load("menu_screen/background_image.png")
+
+    screen.blit(background, (0,0))
 
     pos = pygame.mouse.get_pos()
 
@@ -315,9 +318,8 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 
 
 click = False
-title_image = pygame.image.load("menu_screen/cat_tennis_logo.png")
+
 score_image = pygame.image.load("images/score_logo.png")
-size_of_title_image = title_image.get_size()
 
 while run:
     score_text = str(score)
@@ -329,9 +331,6 @@ while run:
         pygame.display.update()
 
         screen.fill("blue")
-        
-        new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
-        screen.blit(new_image, (-180,-60))
 
         status = starting_menu(play_again_que, str(score))
         startup_menu = status
@@ -410,8 +409,6 @@ while run:
 
             screen.fill("blue")
         
-            new_image = pygame.transform.scale(title_image, (int(size_of_title_image[0] * 0.5), (int(size_of_title_image[1] * 0.5))))
-            screen.blit(new_image, (-180,-60))
         #The following code should be triggered when the restart button is pressed (i hope D:)
         game_over = False
 
