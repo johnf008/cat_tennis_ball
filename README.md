@@ -29,6 +29,8 @@ Taking inspiration from the viral tennis cat video, I decided to recreate it usi
 7. Have the ball get launched faster
 8. Implement a tennis court background
 
+### Completed Updates
+
 ### Why did this project take so much time????
 I haven't touched Python in around a year, and this is my first time using the Pygame library. The reason why this took extremely long was that I had to learn how to use Pygame, and I repeatedly had to switch a lot of the code. For example, I had to give the sprites classes, and I encountered a lot of bugs when doing so. In addition, I had to learn to use Figma to create the logo and the cat racket. I know it seems that I didn't spend this much time on a simple project, but I did because of the time I spent learning. 
 

@@ -231,8 +231,9 @@ def starting_menu(play_again, score):
     again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
     if play_again:
-        draw_text("Womp Womp, You Missed the Ball :(", text_font, (255,255,255), 90, 400)
-        draw_text(score, text_font, (255, 255, 255), 200, 600)
+        draw_text("Womp Womp, You Missed the Ball :(", anime_font, (255,255,255), 40, 350)
+        draw_text("the Ball :(", anime_font, (255, 255, 255), 175, 400)
+        draw_text(score, anime_font, (255, 255, 255), 150, 450)
     
         screen.blit(again_button, (100,500))
     else:
@@ -245,15 +246,10 @@ def starting_menu(play_again, score):
         circle_test.update("green")
         if click:
             return False
-    """"
-    if start_button.collidepoint((pos[0], pos[1])) or again_button.collidepoint((pos[0], pos[1])):
-        if click:
-            return False
-    """
+
     pygame.display.update()
 
     return True
-
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -309,6 +305,8 @@ startup_menu = True
 only_once = False
 
 text_font = pygame.font.SysFont(None, 30)
+anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
+
 score = 0
 
 play_again_que = False
@@ -341,8 +339,6 @@ while run:
         circle_test_group.draw(screen)
         circle_test_group.update(col)
 
-        print(str(startup_menu))
-
         if startup_menu:
             pygame.mixer.music.play(loops=-1)
 
@@ -350,7 +346,7 @@ while run:
 
     
     screen.blit(score_image, (-75,100))
-    draw_text(score_text ,text_font, (0,0,0), 70, 200)
+    draw_text(score_text , anime_font, (0,0,0), 70, 200)
 
     pos = pygame.mouse.get_pos()
 
