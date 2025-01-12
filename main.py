@@ -231,9 +231,9 @@ def starting_menu(play_again, score):
     again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
     if play_again:
-        draw_text("Womp Womp, You Missed the Ball :(", anime_font, (255,255,255), 40, 350)
-        draw_text("the Ball :(", anime_font, (255, 255, 255), 175, 400)
-        draw_text(score, anime_font, (255, 255, 255), 150, 450)
+        draw_text("Womp Womp, You Missed the Ball :(", anime_font, (235,166,64), 40, 350)
+        draw_text("the Ball :(", anime_font, (235,166,64), 175, 400)
+        draw_text(score, anime_font, (235,166,64), 150, 450)
     
         screen.blit(again_button, (100,500))
     else:
@@ -346,7 +346,7 @@ while run:
 
     
     screen.blit(score_image, (-75,100))
-    draw_text(score_text , anime_font, (0,0,0), 70, 200)
+    draw_text(score_text , anime_font, (235,166,64), 70, 200)
 
     pos = pygame.mouse.get_pos()
 
