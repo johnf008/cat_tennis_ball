@@ -219,14 +219,30 @@ class RedCircleTest(pygame.sprite.Sprite):
 class CatCoin(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load("images/cat_cent_image.png")
+        self.image = pygame.image.load("images/cat_cent_image.png").convert_alpha()
 
-        """
-        self.image_mask = pygame.mask = pygame.mask.from_surface(self.image)
-        self.image_of_mask = self.image_mask.to_surface()
-        """
-
+        self.mask = pygame.mask.from_surface(self.image)
+        self.x = random.randint(20,450)
+        self.y = 0
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.rect.center = (self.x, self.y)
+        
+    def move_down(self):
+        self.y = self.y + 2
+        self.update()
+    
+    def collision_collect(self):
+        self.kill()
+        cat_coin.restart_from_position()
+    
+    def restart_from_position(self):
+        self.x = random.randint(20, 450)
+        self.y = 0
+    
+    def update(self):
         self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+    
 
 
 
@@ -327,6 +343,8 @@ startup_menu = True
 
 only_once = False
 
+send_coin = False
+
 text_font = pygame.font.SysFont(None, 30)
 anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
 smaller_anime_font = pygame.font.SysFont('FOT-Yuruka Std', 15)
@@ -386,8 +404,6 @@ while run:
     meme_cat_group.draw(screen)
 
     cat_racket_group.draw(screen)
-
-    cat_coin_group.draw(screen)
     
 
     for event in pygame.event.get():
@@ -517,7 +533,8 @@ while run:
 
             if score % 5 == 0:
                 tennis_ball.movement_speed = tennis_ball.movement_speed + 3
-            
+                send_coin = True
+
         else:
             col = "red"
     
@@ -525,6 +542,15 @@ while run:
     if(tennis_ball.y >= 720):
         played_sound_already = False
         game_over = True
+    
+    if send_coin:
+        cat_coin_group.draw(screen)
+        cat_coin.move_down()
+
+    if pygame.sprite.spritecollide(player_racket, cat_coin_group, False):
+        if pygame.sprite.spritecollide(player_racket, cat_coin_group, False, pygame.sprite.collide_mask):
+            cat_coin.collision_collect()
+            send_coin = False
 
     width = meme_cat.image.get_width()
     height = meme_cat.image.get_height()
