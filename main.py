@@ -325,6 +325,7 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 click = False
 
 score_image = pygame.image.load("images/score_logo.png")
+background_field = pygame.image.load("images/background_field.png")
 
 while run:
     score_text = str(score)
@@ -346,7 +347,7 @@ while run:
         if startup_menu:
             pygame.mixer.music.play(loops=-1)
 
-    screen.fill("white")
+    screen.blit(background_field, (0, 0))
     
     screen.blit(score_image, (-75,100))
     draw_text(score_text , anime_font, (235,166,64), 70, 200)
