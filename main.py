@@ -126,7 +126,7 @@ class TennisBall(pygame.sprite.Sprite):
 
         self.dx_2 = math.cos(angle_2) * self.movement_speed
         self.dy_2 = math.sin(angle_2) * self.movement_speed
-        
+
         self.x = self.x + int(self.dx_2)
         self.y = self.y + int(self.dy_2)
 
@@ -488,8 +488,8 @@ while run:
 
             game_over = False
 
-            if score  == 5:
-                tennis_ball.movement_speed = tennis_ball.movement_speed + 10
+            if score % 5 == 0:
+                tennis_ball.movement_speed = tennis_ball.movement_speed + 3
             
         else:
             col = "red"
