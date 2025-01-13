@@ -239,7 +239,7 @@ def starting_menu(play_again, score, total_score):
         draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
         draw_text("the Ball :(", smaller_anime_font, (235,166,64), 215, 320)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 350)
-        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 400)
+        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 375)
     
         screen.blit(again_button, (175,200))
     else:
