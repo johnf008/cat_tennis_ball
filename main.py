@@ -217,11 +217,11 @@ class RedCircleTest(pygame.sprite.Sprite):
 def starting_menu(play_again, score):
     background = pygame.image.load("menu_screen/background_image.png")
 
+    size = 0 
+
     screen.blit(background, (0,0))
 
     pos = pygame.mouse.get_pos()
-
-    button_1 = pygame.Rect(150, 500, 200, 50)
 
     click = False
 
@@ -234,16 +234,16 @@ def starting_menu(play_again, score):
     again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
     if play_again:
-        draw_text("Womp Womp, You Missed the Ball :(", anime_font, (235,166,64), 40, 350)
-        draw_text("the Ball :(", anime_font, (235,166,64), 175, 400)
-        draw_text(score, anime_font, (235,166,64), 150, 450)
+        draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
+        draw_text("the Ball :(", smaller_anime_font, (235,166,64), 215, 320)
+        draw_text(score, smaller_anime_font, (235,166,64), 200, 350)
     
-        screen.blit(again_button, (100,500))
+        screen.blit(again_button, (175,200))
     else:
-        screen.blit(start_button, (100,500))
+        screen.blit(start_button, (175,200))
 
-    start_button_rect = start_button.get_rect(topleft = (100, 500))
-    again_button_rect = again_button.get_rect(topleft = (100, 500))
+    start_button_rect = start_button.get_rect(topleft = (175, 200))
+    again_button_rect = again_button.get_rect(topleft = (175, 200))
     
     if start_button_rect.collidepoint(pos) or again_button_rect.collidepoint(pos):
         circle_test.update("green")
@@ -309,6 +309,7 @@ only_once = False
 
 text_font = pygame.font.SysFont(None, 30)
 anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
+smaller_anime_font = pygame.font.SysFont('FOT-Yuruka Std', 15)
 
 score = 0
 
