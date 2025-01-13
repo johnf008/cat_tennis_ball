@@ -233,7 +233,7 @@ class CatCoin(pygame.sprite.Sprite):
     
     def collision_collect(self):
         self.kill()
-        cat_coin.restart_from_position()
+        new_coin.restart_from_position()
     
     def restart_from_position(self):
         self.x = random.randint(20, 450)
@@ -303,7 +303,7 @@ player_racket = PlayerRacket()
 tennis_ball = TennisBall()
 meme_cat = CatOpponent()
 cat_racket = CatRacket()
-cat_coin = CatCoin()
+#cat_coin = CatCoin()
 
 col = "red"
 circle_test = RedCircleTest(col)
@@ -321,7 +321,7 @@ player_racket_group.add(player_racket)
 tennis_ball_group.add(tennis_ball)
 meme_cat_group.add(meme_cat)
 cat_racket_group.add(cat_racket)
-cat_coin_group.add(cat_coin)
+#cat_coin_group.add(cat_coin)
 
 circle_test_group.add(circle_test)
 
@@ -404,6 +404,8 @@ while run:
     meme_cat_group.draw(screen)
 
     cat_racket_group.draw(screen)
+
+    cat_coin_group.draw(screen)
     
 
     for event in pygame.event.get():
@@ -533,10 +535,14 @@ while run:
 
             if score % 5 == 0:
                 tennis_ball.movement_speed = tennis_ball.movement_speed + 3
-                send_coin = True
 
+                send_coin = True
+                new_coin = CatCoin()
+                cat_coin_group.add(new_coin)
+                
         else:
             col = "red"
+    
     
     #no collision with racket
     if(tennis_ball.y >= 720):
@@ -544,18 +550,20 @@ while run:
         game_over = True
     
     if send_coin:
-        cat_coin_group.draw(screen)
-        cat_coin.move_down()
-
+        for i in cat_coin_group:
+            i.move_down()
+    
     if pygame.sprite.spritecollide(player_racket, cat_coin_group, False):
         if pygame.sprite.spritecollide(player_racket, cat_coin_group, False, pygame.sprite.collide_mask):
-            cat_coin.collision_collect()
+            for j in cat_coin_group:
+                    j.collision_collect()
             send_coin = False
 
     width = meme_cat.image.get_width()
     height = meme_cat.image.get_height()
 
     circle_test_group.update(col)
+    print(cat_coin_group)
 
     """
     test case statements:
