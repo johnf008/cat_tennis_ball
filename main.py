@@ -216,7 +216,7 @@ class RedCircleTest(pygame.sprite.Sprite):
         self.rect.center = (pos)
         self.image.fill(color)
 
-def starting_menu(play_again, score):
+def starting_menu(play_again, score, total_score):
     background = pygame.image.load("menu_screen/background_image.png")
 
     size = 0 
@@ -239,6 +239,7 @@ def starting_menu(play_again, score):
         draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
         draw_text("the Ball :(", smaller_anime_font, (235,166,64), 215, 320)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 350)
+        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 400)
     
         screen.blit(again_button, (175,200))
     else:
@@ -314,6 +315,7 @@ anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
 smaller_anime_font = pygame.font.SysFont('FOT-Yuruka Std', 15)
 
 score = 0
+total_score = 0
 
 play_again_que = False
 
@@ -335,7 +337,7 @@ while run:
 
         screen.fill("blue")
 
-        status = starting_menu(play_again_que, str(score))
+        status = starting_menu(play_again_que, str(score), str(total_score))
         startup_menu = status
 
         circle_test_group.draw(screen)
@@ -345,7 +347,6 @@ while run:
             pygame.mixer.music.play(loops=-1)
 
     screen.fill("white")
-
     
     screen.blit(score_image, (-75,100))
     draw_text(score_text , anime_font, (235,166,64), 70, 200)
@@ -400,6 +401,8 @@ while run:
         backward = False
         play_again_que = True
 
+        total_score += score
+
         pygame.mixer.music.stop()
         startup_menu = True
         click = False
@@ -407,7 +410,9 @@ while run:
         while startup_menu:
             clock.tick(60)
             text_temp = "Final score: " + str(score)
-            status = starting_menu(play_again_que, text_temp)
+            text_total = "Total score: " + str(total_score)
+
+            status = starting_menu(play_again_que, text_temp, text_total)
             startup_menu = status
 
             screen.fill("blue")
