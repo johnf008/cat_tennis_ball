@@ -24,6 +24,8 @@ Taking inspiration from the viral tennis cat video, I decided to recreate it usi
 2. Add a TikTok comment section to be another player character
 3. Add more cat characters
 4. Implement a shop feature to switch out cats and rackets
+5. Make the tennis ball catch on fire after a certain number of points
+6. Make the cat miss after 50 points triggering a win which will give more points.
 
 ### Completed Updates
 1. Made the ball get launched faster as the score gets increased
