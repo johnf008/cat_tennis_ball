@@ -46,25 +46,11 @@ class TennisBall(pygame.sprite.Sprite):
 
         self.original_mask_image = self.image_of_mask
 
+        self.movement_speed = 7
+
         #self note: original x and y values are (197, 12)
         self.x = 250
         self.y = 12
-
-        #angle left stuff
-        self.target_x_1 = 25
-        self.target_y_1 = 720
-        angle_1 = math.atan2(self.target_y_1 - self.y, self.target_x_1 - self.x)
-
-        self.dx_1 = math.cos(angle_1) * 7
-        self.dy_1 = math.sin(angle_1) * 7
-
-        #angle right stuff
-        self.target_x_2 = 475
-        self.target_y_2 = 720
-        angle_2 = math.atan2(self.target_y_2 - self.y, self.target_x_2 - self.x)
-
-        self.dx_2 = math.cos(angle_2) * 7
-        self.dy_2 = math.sin(angle_2) * 7
 
         self.rect = self.image.get_rect(center=(self.x, self.y))
         self.rect.center = (self.x, self.y)
@@ -79,7 +65,7 @@ class TennisBall(pygame.sprite.Sprite):
         self.default_scale = 1.0
     
     def move_forward(self, ang_fact):
-        self.y = self.y + 7
+        self.y = self.y + self.movement_speed
         angle = ang_fact[0] + 4
 
         factor = ang_fact[1] + 0.015
@@ -93,8 +79,8 @@ class TennisBall(pygame.sprite.Sprite):
         self.target_y_back = 12
         angle_back = math.atan2(self.target_y_back - self.y, self.target_x_back - self.x)
 
-        self.dx_back = math.cos(angle_back) * 7
-        self.dy_back = math.sin(angle_back) * 7
+        self.dx_back = math.cos(angle_back) * self.movement_speed
+        self.dy_back = math.sin(angle_back) * self.movement_speed
 
         self.x += self.dx_back
         self.y += self.dy_back
@@ -111,6 +97,14 @@ class TennisBall(pygame.sprite.Sprite):
 
     
     def move_angle_left(self, ang_fact):
+        #angle left stuff
+        self.target_x_1 = 25
+        self.target_y_1 = 720
+        angle_1 = math.atan2(self.target_y_1 - self.y, self.target_x_1 - self.x)
+
+        self.dx_1 = math.cos(angle_1) * self.movement_speed
+        self.dy_1 = math.sin(angle_1) * self.movement_speed
+        
         self.x = self.x + int(self.dx_1)
         self.y = self.y + int(self.dy_1)
 
@@ -125,6 +119,14 @@ class TennisBall(pygame.sprite.Sprite):
         return (angle,factor)
 
     def move_angle_right(self, ang_fact):
+        #angle right stuff
+        self.target_x_2 = 475
+        self.target_y_2 = 720
+        angle_2 = math.atan2(self.target_y_2 - self.y, self.target_x_2 - self.x)
+
+        self.dx_2 = math.cos(angle_2) * self.movement_speed
+        self.dy_2 = math.sin(angle_2) * self.movement_speed
+        
         self.x = self.x + int(self.dx_2)
         self.y = self.y + int(self.dy_2)
 
@@ -485,6 +487,10 @@ while run:
                     score += 1
 
             game_over = False
+
+            if score  == 5:
+                tennis_ball.movement_speed = tennis_ball.movement_speed + 10
+            
         else:
             col = "red"
     
