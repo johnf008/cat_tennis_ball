@@ -233,7 +233,7 @@ class CatCoin(pygame.sprite.Sprite):
     
     def collision_collect(self):
         self.kill()
-        new_coin.restart_from_position()
+        
     
     def restart_from_position(self):
         self.x = random.randint(20, 450)
@@ -345,6 +345,8 @@ only_once = False
 
 send_coin = False
 
+collision_trigger_down = True
+
 text_font = pygame.font.SysFont(None, 30)
 anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
 smaller_anime_font = pygame.font.SysFont('FOT-Yuruka Std', 15)
@@ -445,6 +447,13 @@ while run:
         startup_menu = True
         click = False
 
+        new_coin.y = 0
+        send_coin = False
+        
+        for k in cat_coin_group:
+            k.kill()
+            
+
         while startup_menu:
             clock.tick(60)
             text_temp = "Final score: " + str(score)
@@ -537,9 +546,10 @@ while run:
                 tennis_ball.movement_speed = tennis_ball.movement_speed + 3
 
                 send_coin = True
-                new_coin = CatCoin()
-                cat_coin_group.add(new_coin)
-                
+
+                if len(cat_coin_group.sprites()) <= 0:
+                    new_coin = CatCoin()
+                    cat_coin_group.add(new_coin)       
         else:
             col = "red"
     
@@ -551,12 +561,13 @@ while run:
     
     if send_coin:
         for i in cat_coin_group:
-            i.move_down()
+            (cat_coin_group.sprites()[0]).move_down()
     
     if pygame.sprite.spritecollide(player_racket, cat_coin_group, False):
         if pygame.sprite.spritecollide(player_racket, cat_coin_group, False, pygame.sprite.collide_mask):
             for j in cat_coin_group:
-                    j.collision_collect()
+                    if j.y >= 500:
+                        (cat_coin_group.sprites()[0]).collision_collect()
             send_coin = False
 
     width = meme_cat.image.get_width()
@@ -564,7 +575,7 @@ while run:
 
     circle_test_group.update(col)
     print(cat_coin_group)
-
+    
     """
     test case statements:
     print("Tennis ball at ", tennis_ball.x, ", ", tennis_ball.y )
