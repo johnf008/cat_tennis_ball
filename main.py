@@ -432,6 +432,8 @@ while run:
 
         score = 0
 
+        tennis_ball.movement_speed = 7
+
         pygame.mixer.music.play()
 
     elif angle_left:
