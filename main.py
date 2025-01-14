@@ -368,6 +368,19 @@ click = False
 score_image = pygame.image.load("images/score_logo.png")
 background_field = pygame.image.load("images/background_field.png")
 
+saved_score_path = ("save_data/score.txt")
+with open(saved_score_path, 'r') as file_obj:
+    first_char = file_obj.read(1)
+
+    if not first_char:
+        write_obj = open(saved_score_path, "w")
+        write_obj.write("0")
+        write_obj.close()
+    else:
+        read_obj = open(saved_score_path, 'r')
+        total_score = read_obj.read()
+        total_score = int(total_score)
+
 while run:
     score_text = str(score)
     cat_coins_text = str(cat_coins)
@@ -382,7 +395,6 @@ while run:
 
         status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins))
         startup_menu = status
-
         circle_test_group.draw(screen)
         circle_test_group.update(col)
 
@@ -462,7 +474,10 @@ while run:
         
         for k in cat_coin_group:
             k.kill()
-            
+
+        write_obj = open(saved_score_path, "w")
+        write_obj.write(str(total_score))
+        write_obj.close() 
 
         while startup_menu:
             clock.tick(60)
