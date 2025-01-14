@@ -246,7 +246,7 @@ class CatCoin(pygame.sprite.Sprite):
 
 
 
-def starting_menu(play_again, score, total_score, total_coins):
+def starting_menu(play_again, score, total_score, total_coins, coins):
     background = pygame.image.load("menu_screen/background_image.png")
 
     size = 0 
@@ -267,9 +267,9 @@ def starting_menu(play_again, score, total_score, total_coins):
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
     if play_again:
         draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
-        draw_text("the Ball :(", smaller_anime_font, (235,166,64), 215, 320)
-        draw_text(score, smaller_anime_font, (235,166,64), 200, 350)
-        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 375)
+        draw_text(score, smaller_anime_font, (235,166,64), 200, 330)
+        draw_text(coins, smaller_anime_font, (235, 166, 64), 200, 350)
+        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 380)
         draw_text(total_coins, smaller_anime_font, (235, 166, 64), 200, 400)
     
         screen.blit(again_button, (175,200))
@@ -370,6 +370,7 @@ coins_image = pygame.image.load("images/coins_logo.png")
 background_field = pygame.image.load("images/background_field.png")
 
 saved_score_path = ("save_data/score.txt")
+saved_coin_path = ("save_data/coins.txt")
 with open(saved_score_path, 'r') as file_obj:
     first_char = file_obj.read(1)
 
@@ -381,6 +382,18 @@ with open(saved_score_path, 'r') as file_obj:
         read_obj = open(saved_score_path, 'r')
         total_score = read_obj.read()
         total_score = int(total_score)
+
+with open(saved_coin_path, 'r') as file_obj:
+    first_char = file_obj.read(1)
+
+    if not first_char:
+        write_obj = open(saved_coin_path, "w")
+        write_obj.write("0")
+        write_obj.close()
+    else:
+        read_obj = open(saved_coin_path, 'r')
+        total_cat_coins = read_obj.read()
+        total_cat_coins = int()
 
 while run:
     score_text = str(score)
@@ -394,7 +407,7 @@ while run:
 
         screen.fill("blue")
 
-        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins))
+        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins), str(cat_coins))
         startup_menu = status
         circle_test_group.draw(screen)
         circle_test_group.update(col)
@@ -480,13 +493,19 @@ while run:
         write_obj.write(str(total_score))
         write_obj.close() 
 
+        write_obj = open(saved_coin_path, "w")
+        write_obj.write(str(total_cat_coins))
+        write_obj.close()
+
         while startup_menu:
             clock.tick(60)
             text_temp = "Final score: " + str(score)
+            coins_earn = "Final cat coins: " + str(cat_coins)
+
             text_total = "Total score: " + str(total_score)
             cointxt_total = "Total cat coins: " + str(total_cat_coins)
 
-            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total)
+            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total, coins_earn)
             startup_menu = status
 
             screen.fill("blue")
