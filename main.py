@@ -246,7 +246,7 @@ class CatCoin(pygame.sprite.Sprite):
 
 
 
-def starting_menu(play_again, score, total_score):
+def starting_menu(play_again, score, total_score, total_coins):
     background = pygame.image.load("menu_screen/background_image.png")
 
     size = 0 
@@ -270,6 +270,7 @@ def starting_menu(play_again, score, total_score):
         draw_text("the Ball :(", smaller_anime_font, (235,166,64), 215, 320)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 350)
         draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 375)
+        draw_text(total_coins, smaller_anime_font, (235, 166, 64), 200, 400)
     
         screen.blit(again_button, (175,200))
     else:
@@ -354,6 +355,9 @@ smaller_anime_font = pygame.font.SysFont('FOT-Yuruka Std', 15)
 score = 0
 total_score = 0
 
+cat_coins = 0
+total_cat_coins = 0
+
 play_again_que = False
 
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
@@ -366,6 +370,7 @@ background_field = pygame.image.load("images/background_field.png")
 
 while run:
     score_text = str(score)
+    cat_coins_text = str(cat_coins)
 
     clock.tick(60)
     
@@ -375,7 +380,7 @@ while run:
 
         screen.fill("blue")
 
-        status = starting_menu(play_again_que, str(score), str(total_score))
+        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins))
         startup_menu = status
 
         circle_test_group.draw(screen)
@@ -388,6 +393,9 @@ while run:
     
     screen.blit(score_image, (-75,100))
     draw_text(score_text , anime_font, (235,166,64), 70, 200)
+
+
+    draw_text(cat_coins_text, anime_font, (235, 166, 64), 400, 200)
 
     pos = pygame.mouse.get_pos()
 
@@ -408,7 +416,8 @@ while run:
     cat_racket_group.draw(screen)
 
     cat_coin_group.draw(screen)
-    
+
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -442,6 +451,7 @@ while run:
         play_again_que = True
 
         total_score += score
+        total_cat_coins += cat_coins
 
         pygame.mixer.music.stop()
         startup_menu = True
@@ -458,8 +468,9 @@ while run:
             clock.tick(60)
             text_temp = "Final score: " + str(score)
             text_total = "Total score: " + str(total_score)
+            cointxt_total = "Total cat coins: " + str(total_cat_coins)
 
-            status = starting_menu(play_again_que, text_temp, text_total)
+            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total)
             startup_menu = status
 
             screen.fill("blue")
@@ -477,6 +488,7 @@ while run:
         cat_racket.y = 55
 
         score = 0
+        cat_coins = 0
 
         tennis_ball.movement_speed = 7
 
@@ -569,6 +581,7 @@ while run:
                     if j.y >= 500:
                         (cat_coin_group.sprites()[0]).collision_collect()
             send_coin = False
+            cat_coins = cat_coins + 1
 
     width = meme_cat.image.get_width()
     height = meme_cat.image.get_height()
