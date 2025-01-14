@@ -303,7 +303,7 @@ player_racket = PlayerRacket()
 tennis_ball = TennisBall()
 meme_cat = CatOpponent()
 cat_racket = CatRacket()
-#cat_coin = CatCoin()
+new_coin = CatCoin()
 
 col = "red"
 circle_test = RedCircleTest(col)
