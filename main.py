@@ -366,6 +366,7 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 click = False
 
 score_image = pygame.image.load("images/score_logo.png")
+coins_image = pygame.image.load("images/coins_logo.png")
 background_field = pygame.image.load("images/background_field.png")
 
 saved_score_path = ("save_data/score.txt")
@@ -406,7 +407,7 @@ while run:
     screen.blit(score_image, (-75,100))
     draw_text(score_text , anime_font, (235,166,64), 70, 200)
 
-
+    screen.blit(coins_image, (265, 100))
     draw_text(cat_coins_text, anime_font, (235, 166, 64), 400, 200)
 
     pos = pygame.mouse.get_pos()
