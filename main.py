@@ -383,17 +383,21 @@ with open(saved_score_path, 'r') as file_obj:
         total_score = read_obj.read()
         total_score = int(total_score)
 
-with open(saved_coin_path, 'r') as file_obj:
-    first_char = file_obj.read(1)
+with open(saved_coin_path, 'r') as diff_file_obj:
+    first_char = diff_file_obj.read(1)
 
     if not first_char:
-        write_obj = open(saved_coin_path, "w")
-        write_obj.write("0")
-        write_obj.close()
+        diff_file_obj = open(saved_coin_path, "w")
+        diff_file_obj.write("0")
+        diff_file_obj.close()
+        print("WE AINT READ IT RIGHT")
     else:
-        read_obj = open(saved_coin_path, 'r')
-        total_cat_coins = read_obj.read()
-        total_cat_coins = int()
+        diff_read_obj = open(saved_coin_path, 'r')
+        total_cat_coins = diff_read_obj.read()
+        print(total_cat_coins)
+        total_cat_coins = int(total_cat_coins)
+        print("WE READ IT RIGHT")
+        print("Your coins are: " + str(total_cat_coins))
 
 while run:
     score_text = str(score)
@@ -424,6 +428,8 @@ while run:
     draw_text(cat_coins_text, anime_font, (235, 166, 64), 400, 200)
 
     pos = pygame.mouse.get_pos()
+
+    print(str(total_cat_coins))
 
     #move tennis racket
     player_racket.move_racket(pos[0])
@@ -493,9 +499,9 @@ while run:
         write_obj.write(str(total_score))
         write_obj.close() 
 
-        write_obj = open(saved_coin_path, "w")
-        write_obj.write(str(total_cat_coins))
-        write_obj.close()
+        new_write_obj = open(saved_coin_path, "w")
+        new_write_obj.write(str(total_cat_coins))
+        new_write_obj.close()
 
         while startup_menu:
             clock.tick(60)
@@ -622,7 +628,6 @@ while run:
     height = meme_cat.image.get_height()
 
     circle_test_group.update(col)
-    print(cat_coin_group)
     
     """
     test case statements:
