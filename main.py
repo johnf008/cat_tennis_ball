@@ -2,7 +2,7 @@ import pygame
 import math
 import random
 import time
-
+from cryptography.fernet import Fernet
 pygame.init()
 
 
@@ -371,7 +371,13 @@ background_field = pygame.image.load("images/background_field.png")
 
 saved_score_path = ("save_data/score.txt")
 saved_coin_path = ("save_data/coins.txt")
-with open(saved_score_path, 'r') as file_obj:
+
+with open ("file_key.key", "rb") as filekey:
+    key = filekey.read()
+
+fernet = Fernet(key)
+
+with open(saved_score_path, 'rb') as file_obj:
     first_char = file_obj.read(1)
 
     if not first_char:
@@ -379,21 +385,23 @@ with open(saved_score_path, 'r') as file_obj:
         write_obj.write("0")
         write_obj.close()
     else:
-        read_obj = open(saved_score_path, 'r')
+        read_obj = open(saved_score_path, 'rb')
         total_score = read_obj.read()
+        total_score = fernet.decrypt(total_score)
         total_score = int(total_score)
 
-with open(saved_coin_path, 'r') as diff_file_obj:
+with open(saved_coin_path, 'rb') as diff_file_obj:
     first_char = diff_file_obj.read(1)
 
     if not first_char:
-        diff_file_obj = open(saved_coin_path, "w")
+        diff_file_obj = open(saved_coin_path, "wb")
         diff_file_obj.write("0")
         diff_file_obj.close()
         print("WE AINT READ IT RIGHT")
     else:
-        diff_read_obj = open(saved_coin_path, 'r')
+        diff_read_obj = open(saved_coin_path, 'rb')
         total_cat_coins = diff_read_obj.read()
+        total_cat_coins = fernet.decrypt(total_cat_coins)
         print(total_cat_coins)
         total_cat_coins = int(total_cat_coins)
         print("WE READ IT RIGHT")
@@ -495,12 +503,16 @@ while run:
         for k in cat_coin_group:
             k.kill()
 
-        write_obj = open(saved_score_path, "w")
-        write_obj.write(str(total_score))
+
+        encrypted_total_score = fernet.encrypt(str(total_score).encode())
+        encrypted_total_coins = fernet.encrypt(str(total_cat_coins).encode())
+
+        write_obj = open(saved_score_path, "wb")
+        write_obj.write(encrypted_total_score)
         write_obj.close() 
 
-        new_write_obj = open(saved_coin_path, "w")
-        new_write_obj.write(str(total_cat_coins))
+        new_write_obj = open(saved_coin_path, "wb")
+        new_write_obj.write(encrypted_total_coins)
         new_write_obj.close()
 
         while startup_menu:
