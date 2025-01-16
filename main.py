@@ -378,34 +378,39 @@ with open ("file_key.key", "rb") as filekey:
 fernet = Fernet(key)
 
 with open(saved_score_path, 'rb') as file_obj:
-    first_char = file_obj.read(1)
-
-    if not first_char:
-        write_obj = open(saved_score_path, "w")
-        write_obj.write("0")
+    encrypted_data = file_obj.read()
+    string_decrypted = fernet.decrypt(encrypted_data)
+    
+    if len(string_decrypted) == 0:
+        encrypted_zero = fernet.encrypt(str(0).encode())
+        write_obj = open(saved_score_path, "wb")
+        write_obj.write(encrypted_zero)
         write_obj.close()
     else:
         read_obj = open(saved_score_path, 'rb')
         total_score = read_obj.read()
+        print(total_score)
         total_score = fernet.decrypt(total_score)
+        print(total_score)
         total_score = int(total_score)
 
 with open(saved_coin_path, 'rb') as diff_file_obj:
-    first_char = diff_file_obj.read(1)
+    encrypted_data = diff_file_obj.read()
+    string_decrypted = fernet.decrypt(encrypted_data)
 
-    if not first_char:
-        diff_file_obj = open(saved_coin_path, "wb")
-        diff_file_obj.write("0")
-        diff_file_obj.close()
-        print("WE AINT READ IT RIGHT")
+    if len(string_decrypted) == 0:
+        encrypted_zero = fernet.encrypt(str(0).encode())
+        write_obj = open(saved_score_path, "wb")
+        write_obj.write(encrypted_zero)
+        write_obj.close()
     else:
+        print("before decryption: " + str(total_cat_coins))
         diff_read_obj = open(saved_coin_path, 'rb')
         total_cat_coins = diff_read_obj.read()
         total_cat_coins = fernet.decrypt(total_cat_coins)
         print(total_cat_coins)
         total_cat_coins = int(total_cat_coins)
-        print("WE READ IT RIGHT")
-        print("Your coins are: " + str(total_cat_coins))
+        
 
 while run:
     score_text = str(score)

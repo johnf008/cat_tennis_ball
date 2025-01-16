@@ -5,10 +5,10 @@ with open('file_key.key', "rb") as filekey:
 
 fernet = Fernet(key)
 
-with open("save_data/coins.txt", "rb") as file:
+with open("save_data/score.txt", "rb") as file:
     og = file.read()
 
 encrypted = fernet.encrypt(og)
 
-with open ("save_data/coins.txt", "wb") as encrypted_file:
+with open ("save_data/score.txt", "wb") as encrypted_file:
     encrypted_file.write(encrypted)
