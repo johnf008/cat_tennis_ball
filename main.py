@@ -226,6 +226,9 @@ class CatCoin(pygame.sprite.Sprite):
         self.y = 0
         self.rect = self.image.get_rect(center = (self.x, self.y))
         self.rect.center = (self.x, self.y)
+
+        self.drop_effect = pygame.mixer.Sound("music_and_sounds/coin_drop_effect.mp3")
+        self.collect_effect = pygame.mixer.Sound("music_and_sounds/collect_coin_sound.mp3")
         
     def move_down(self):
         self.y = self.y + 2
@@ -233,7 +236,6 @@ class CatCoin(pygame.sprite.Sprite):
     
     def collision_collect(self):
         self.kill()
-        
     
     def restart_from_position(self):
         self.x = random.randint(20, 450)
@@ -524,9 +526,6 @@ while run:
 
     cat_coin_group.draw(screen)
 
-    
-
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -707,6 +706,7 @@ while run:
                 if len(cat_coin_group.sprites()) <= 0:
                     new_coin = CatCoin()
                     cat_coin_group.add(new_coin)       
+                    new_coin.drop_effect.play()
         else:
             col = "red"
     
@@ -727,6 +727,8 @@ while run:
                         (cat_coin_group.sprites()[0]).collision_collect()
             send_coin = False
             cat_coins = cat_coins + 1
+            new_coin.collect_effect.play()
+
 
     width = meme_cat.image.get_width()
     height = meme_cat.image.get_height()
