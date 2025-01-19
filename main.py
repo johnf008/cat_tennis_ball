@@ -313,6 +313,8 @@ def starting_menu(play_again, score, total_score, total_coins, coins, win):
 
     again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
+    settings_button = pygame.image.load("menu_screen/settings_logo.png").convert_alpha()
+
     if win:
         draw_text("Congratulations, you beat the cat :D", smaller_anime_font, (235,166,64), 100, 300)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 330)
@@ -321,6 +323,7 @@ def starting_menu(play_again, score, total_score, total_coins, coins, win):
         draw_text(total_coins, smaller_anime_font, (235, 166, 64), 200, 400)
     
         screen.blit(again_button, (175,200))
+        screen.blit(settings_button, (400, 400))
     elif play_again:
         draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 330)
@@ -329,14 +332,46 @@ def starting_menu(play_again, score, total_score, total_coins, coins, win):
         draw_text(total_coins, smaller_anime_font, (235, 166, 64), 200, 400)
     
         screen.blit(again_button, (175,200))
+        screen.blit(settings_button, (400, 400))
     else:
         screen.blit(start_button, (175,200))
+        screen.blit(settings_button, (400, 400))
 
     start_button_rect = start_button.get_rect(topleft = (175, 200))
     again_button_rect = again_button.get_rect(topleft = (175, 200))
+    settings_button_rect = settings_button.get_rect(topleft = (400,400))
     
     if start_button_rect.collidepoint(pos) or again_button_rect.collidepoint(pos):
         circle_test.update("green")
+        if click:
+            return False
+    elif settings_button_rect.collidepoint(pos):
+        if click:
+            return 2
+
+    pygame.display.update()
+
+    return True
+
+def settings_menu():
+    background = pygame.image.load("menu_screen/background_image.png")
+    back_button = pygame.image.load("menu_screen/back_button.png")
+
+    screen.blit(background, (0,0))
+    screen.blit(back_button, (0,100))
+
+    pos = pygame.mouse.get_pos()
+
+    click = False
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            click = True
+    
+    back_button_rect = back_button.get_rect(topleft = (0, 100))
+    if back_button_rect.collidepoint(pos):
         if click:
             return False
 
@@ -406,6 +441,10 @@ only_once = False
 send_coin = False
 
 collision_trigger_down = True
+
+settings_menu_trigger = False
+
+in_the_menus = True
 
 text_font = pygame.font.SysFont(None, 30)
 anime_font = pygame.font.SysFont('FOT-Yuruka Std', 30)
@@ -483,20 +522,36 @@ while run:
     cat_coins_text = str(cat_coins)
 
     clock.tick(60)
-    
-    while startup_menu:
-        clock.tick(60)
-        pygame.display.update()
+    while in_the_menus:
+        while startup_menu:
+            clock.tick(60)
+            pygame.display.update()
 
-        screen.fill("blue")
+            screen.fill("blue")
 
-        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins), str(cat_coins), win_condition)
-        startup_menu = status
-        circle_test_group.draw(screen)
-        circle_test_group.update(col)
+            status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins), str(cat_coins), win_condition)
 
-        if startup_menu:
-            pygame.mixer.music.play(loops=-1)
+            if status == 2:
+                status = False
+                settings_menu_trigger = True
+            startup_menu = status
+            circle_test_group.draw(screen)
+            circle_test_group.update(col)
+
+            if not startup_menu and not settings_menu_trigger:
+                pygame.mixer.music.play(loops=-1)
+                in_the_menus = False
+                startup_menu = False
+                settings_menu_trigger = False
+        
+        while settings_menu_trigger:
+            clock.tick(60)
+            
+            settings_menu_trigger = settings_menu()
+            screen.fill("blue")
+
+            if not settings_menu_trigger:
+                startup_menu = True
 
     screen.blit(background_field, (0, 0))
     
@@ -558,6 +613,8 @@ while run:
 
         play_again_que = True
 
+        in_the_menus = True
+
         total_score += score
         total_cat_coins += cat_coins
 
@@ -582,19 +639,38 @@ while run:
         new_write_obj = open(saved_coin_path, "wb")
         new_write_obj.write(encrypted_total_coins)
         new_write_obj.close()
+        while in_the_menus:
+            while startup_menu:
+                clock.tick(60)
+                pygame.display.update()
 
-        while startup_menu:
-            clock.tick(60)
-            text_temp = "Final score: " + str(score)
-            coins_earn = "Final cat coins: " + str(cat_coins)
+                text_temp = "Final score: " + str(score)
+                coins_earn = "Final cat coins: " + str(cat_coins)
 
-            text_total = "Total score: " + str(total_score)
-            cointxt_total = "Total cat coins: " + str(total_cat_coins)
+                text_total = "Total score: " + str(total_score)
+                cointxt_total = "Total cat coins: " + str(total_cat_coins)
 
-            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total, coins_earn, win_condition)
-            startup_menu = status
+                status = starting_menu(play_again_que, text_temp, text_total, cointxt_total, coins_earn, win_condition)
+                if status == 2:
+                    status = False
+                    settings_menu_trigger = True
 
-            screen.fill("blue")
+                startup_menu = status
+
+                if not startup_menu and not settings_menu_trigger:
+                    in_the_menus = False
+                    startup_menu = False
+                    settings_menu_trigger = False
+                
+            
+            while settings_menu_trigger:
+                clock.tick(60)
+                
+                settings_menu_trigger = settings_menu()
+                
+
+                if not settings_menu_trigger:
+                    startup_menu = True
         
         #The following code should be triggered when the restart button is pressed (i hope D:)
         game_over = False
