@@ -292,7 +292,7 @@ class Explosion(pygame.sprite.Sprite):
         
     
     
-def starting_menu(play_again, score, total_score, total_coins, coins):
+def starting_menu(play_again, score, total_score, total_coins, coins, win):
     background = pygame.image.load("menu_screen/background_image.png")
 
     size = 0 
@@ -311,7 +311,15 @@ def starting_menu(play_again, score, total_score, total_coins, coins):
 
     again_button = pygame.image.load("menu_screen/play_again_button.png").convert_alpha()
     start_button = pygame.image.load("menu_screen/start_button.png").convert_alpha()
-    if play_again:
+    if win:
+        draw_text("Congratulations, you beat the cat :D", smaller_anime_font, (235,166,64), 100, 300)
+        draw_text(score, smaller_anime_font, (235,166,64), 200, 330)
+        draw_text(coins, smaller_anime_font, (235, 166, 64), 200, 350)
+        draw_text(total_score, smaller_anime_font, (235, 166, 64), 200, 380)
+        draw_text(total_coins, smaller_anime_font, (235, 166, 64), 200, 400)
+    
+        screen.blit(again_button, (175,200))
+    elif play_again:
         draw_text("Womp Womp, You Missed the Ball :(", smaller_anime_font, (235,166,64), 100, 300)
         draw_text(score, smaller_anime_font, (235,166,64), 200, 330)
         draw_text(coins, smaller_anime_font, (235, 166, 64), 200, 350)
@@ -417,6 +425,8 @@ dont_move = False
 
 played_explosion_sound_already = False
 
+win_condition = False
+
 
 score_image = pygame.image.load("images/score_logo.png")
 coins_image = pygame.image.load("images/coins_logo.png")
@@ -478,7 +488,7 @@ while run:
 
         screen.fill("blue")
 
-        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins), str(cat_coins))
+        status = starting_menu(play_again_que, str(score), str(total_score), str(total_cat_coins), str(cat_coins), win_condition)
         startup_menu = status
         circle_test_group.draw(screen)
         circle_test_group.update(col)
@@ -546,6 +556,7 @@ while run:
     if game_over:
         forward = False
         backward = False
+
         play_again_que = True
 
         total_score += score
@@ -581,13 +592,14 @@ while run:
             text_total = "Total score: " + str(total_score)
             cointxt_total = "Total cat coins: " + str(total_cat_coins)
 
-            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total, coins_earn)
+            status = starting_menu(play_again_que, text_temp, text_total, cointxt_total, coins_earn, win_condition)
             startup_menu = status
 
             screen.fill("blue")
         
         #The following code should be triggered when the restart button is pressed (i hope D:)
         game_over = False
+        win_condition = False
         played_explosion_sound_already = False
         dont_move = False
 
@@ -624,6 +636,7 @@ while run:
         explosion_group.update()
         if explosion.current_sprite >= ((len(explosion.sprites)) - 1):
             game_over = True
+        win_condition = True
             
 
     elif angle_left:
