@@ -588,6 +588,8 @@ while run:
         
         #The following code should be triggered when the restart button is pressed (i hope D:)
         game_over = False
+        played_explosion_sound_already = False
+        dont_move = False
 
         tennis_ball.x = 250
         tennis_ball.y = 12
@@ -597,6 +599,8 @@ while run:
 
         cat_racket.x = 260
         cat_racket.y = 55
+
+        explosion.current_sprite = 0
 
         score = 0
         cat_coins = 0
@@ -671,14 +675,14 @@ while run:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 10
+                    score += 1
                 else:
                     pass
             else:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 10
+                    score += 1
 
             game_over = False
 
