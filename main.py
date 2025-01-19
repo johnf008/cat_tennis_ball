@@ -242,10 +242,52 @@ class CatCoin(pygame.sprite.Sprite):
     def update(self):
         self.rect = self.image.get_rect()
         self.rect.center = (self.x, self.y)
+
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, pos_x, pos_y):
+        super().__init__()
+        self.sprites = []
+
+        #to whoever is reading this, I know this is terriible :(
+        self.sprites.append(pygame.image.load("explosion_frames/frame_01_delay-0.03s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_02_delay-0.03s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_03_delay-0.03s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_04_delay-0.03s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_05_delay-0.03s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_06_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_07_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_08_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_09_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_10_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_11_delay-0.06s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_12_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_13_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_14_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_15_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_16_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_17_delay-0.09s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_18_delay-0.12s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_19_delay-0.12s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_20_delay-0.12s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_21_delay-0.12s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_22_delay-0.12s.gif"))
+        self.sprites.append(pygame.image.load("explosion_frames/frame_23_delay-0.12s.gif"))
+        self.current_sprite = 0 
+        self.image = self.sprites[self.current_sprite]
+
+        self.rect = self.image.get_rect()
+        self.rect.topleft = [pos_x, pos_y]
     
-
-
-
+    def update(self):
+        self.current_sprite += 0.2
+        
+        if self.current_sprite >= len(self.sprites):
+            self.current_sprite = 0
+            
+        self.image = self.sprites[int(self.current_sprite)]
+        
+    
+    
 def starting_menu(play_again, score, total_score, total_coins, coins):
     background = pygame.image.load("menu_screen/background_image.png")
 
@@ -305,6 +347,7 @@ tennis_ball = TennisBall()
 meme_cat = CatOpponent()
 cat_racket = CatRacket()
 new_coin = CatCoin()
+explosion = Explosion(100, 100)
 
 col = "red"
 circle_test = RedCircleTest(col)
@@ -314,6 +357,7 @@ tennis_ball_group = pygame.sprite.Group()
 meme_cat_group = pygame.sprite.Group()
 cat_racket_group = pygame.sprite.Group()
 cat_coin_group = pygame.sprite.Group()
+explosion_group = pygame.sprite.Group()
 
 circle_test_group = pygame.sprite.Group()
 
@@ -322,6 +366,7 @@ player_racket_group.add(player_racket)
 tennis_ball_group.add(tennis_ball)
 meme_cat_group.add(meme_cat)
 cat_racket_group.add(cat_racket)
+explosion_group.add(explosion)
 #cat_coin_group.add(cat_coin)
 
 circle_test_group.add(circle_test)
@@ -365,8 +410,11 @@ pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 
 click = False
 
+dont_move = False
+
 score_image = pygame.image.load("images/score_logo.png")
 coins_image = pygame.image.load("images/coins_logo.png")
+
 background_field = pygame.image.load("images/background_field.png")
 
 saved_score_path = ("save_data/score.txt")
@@ -442,8 +490,6 @@ while run:
 
     pos = pygame.mouse.get_pos()
 
-    print(str(total_cat_coins))
-
     #move tennis racket
     player_racket.move_racket(pos[0])
 
@@ -462,13 +508,14 @@ while run:
 
     cat_coin_group.draw(screen)
 
+    
 
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
 
-    while tennis_ball.y <= 12:
+    while tennis_ball.y <= 12 and not dont_move:
         if pos_assign_num == 1:
             angle_left = True
             factor = 1
@@ -551,6 +598,20 @@ while run:
         tennis_ball.movement_speed = 7
 
         pygame.mixer.music.play()
+    elif score == 50 and tennis_ball.y <= 15 and not game_over:
+        forward = False
+        angle_left = False
+        angle_right = False
+        dont_move = True
+
+        explosion_group.draw(screen)
+        explosion_group.update()
+        if explosion.current_sprite >= ((len(explosion.sprites)) - 1):
+            game_over = True
+            print("you're in the game over loop")
+        print("you're in the loop, but not the game over one")
+        print("Current explosion sprite #: " + str(explosion.current_sprite))
+        print("Current length #: " + str(len(explosion.sprites)))
 
     elif angle_left:
         
@@ -601,14 +662,14 @@ while run:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 1
+                    score += 10
                 else:
                     pass
             else:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 1
+                    score += 10
 
             game_over = False
 
