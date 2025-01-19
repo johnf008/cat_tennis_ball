@@ -277,6 +277,8 @@ class Explosion(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.topleft = [pos_x, pos_y]
+
+        self.explosion_sound = pygame.mixer.Sound("music_and_sounds/explosion_sound_effect.mp3")
     
     def update(self):
         self.current_sprite += 0.2
@@ -285,6 +287,8 @@ class Explosion(pygame.sprite.Sprite):
             self.current_sprite = 0
             
         self.image = self.sprites[int(self.current_sprite)]
+
+        self.rect.center = meme_cat.rect.center
         
     
     
@@ -407,10 +411,12 @@ play_again_que = False
 
 pygame.mixer.music.load("music_and_sounds/wii_music.mp3")
 
-
 click = False
 
 dont_move = False
+
+played_explosion_sound_already = False
+
 
 score_image = pygame.image.load("images/score_logo.png")
 coins_image = pygame.image.load("images/coins_logo.png")
@@ -603,15 +609,18 @@ while run:
         angle_left = False
         angle_right = False
         dont_move = True
+        
 
+        if not played_explosion_sound_already:
+            played_explosion_sound_already = True
+            explosion.explosion_sound.play()
+            print("we played the sound")
+    
         explosion_group.draw(screen)
         explosion_group.update()
         if explosion.current_sprite >= ((len(explosion.sprites)) - 1):
             game_over = True
-            print("you're in the game over loop")
-        print("you're in the loop, but not the game over one")
-        print("Current explosion sprite #: " + str(explosion.current_sprite))
-        print("Current length #: " + str(len(explosion.sprites)))
+            
 
     elif angle_left:
         
