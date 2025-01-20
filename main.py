@@ -357,14 +357,24 @@ def settings_menu():
     global infinite_mode
     global clicked_on
 
-    background = pygame.image.load("menu_screen/background_image.png")
-    back_button = pygame.image.load("menu_screen/back_button.png")
-    infinite_button = pygame.image.load("menu_screen/infinite_mode_button.png")
+    global chill_mode
+    global clicked_on_chill
+
+    global background_toggle
+    global clicked_on_background
+
+    background = pygame.image.load("menu_screen/background_image.png").convert_alpha()
+    back_button = pygame.image.load("menu_screen/back_button.png").convert_alpha()
+    infinite_button = pygame.image.load("menu_screen/infinite_mode_button.png").convert_alpha()
+    chill_button = pygame.image.load("menu_screen/chill_mode_button.png").convert_alpha()
+    background_button = pygame.image.load("menu_screen/background_button.png").convert_alpha()
 
     screen.blit(background, (0,0))
 
     screen.blit(back_button, (0,100))
-    screen.blit(infinite_button, (100, 200))
+    screen.blit(infinite_button, (70, 200))
+    screen.blit(chill_button, (200,200))
+    screen.blit(background_button, (330, 200))
 
     pos = pygame.mouse.get_pos()
 
@@ -377,7 +387,9 @@ def settings_menu():
             click = True
     
     back_button_rect = back_button.get_rect(topleft = (0, 100))
-    infinite_button_rect = infinite_button.get_rect(topleft = (100, 200))
+    infinite_button_rect = infinite_button.get_rect(topleft = (70, 200))
+    chill_button_rect = chill_button.get_rect(topleft = (200,200))
+    background_button_rect = background_button.get_rect(topleft = (330, 200))
     
     if infinite_button_rect.collidepoint(pos):
         if click:
@@ -388,10 +400,38 @@ def settings_menu():
                 infinite_mode = False
                 clicked_on = False
 
+    if chill_button_rect.collidepoint(pos):
+        if click:
+            if not clicked_on_chill:
+                chill_mode = True
+                clicked_on_chill = True
+            elif clicked_on_chill:
+                chill_mode = False
+                clicked_on_chill = False
+
+    if background_button_rect.collidepoint(pos):
+        if click:
+            if not clicked_on_background:
+                background_toggle = True
+                clicked_on_background = True
+            elif clicked_on_background:
+                background_toggle = False
+                clicked_on_background = False
+
     if infinite_mode:
         pygame.draw.rect(screen, "pink", infinite_button_rect, 3)
     else:
-        pygame.draw.rect(screen, "red", infinite_button_rect, 1)
+        pygame.draw.rect(screen, "red", infinite_button_rect, 3)
+
+    if chill_mode:
+        pygame.draw.rect(screen, "pink", chill_button_rect, 3)
+    else:
+        pygame.draw.rect(screen, "red", chill_button_rect, 3)
+
+    if not background_toggle:
+        pygame.draw.rect(screen, "pink", background_button_rect, 3)
+    else:
+        pygame.draw.rect(screen, "red", background_button_rect, 3)
 
     if back_button_rect.collidepoint(pos):
         if click:
@@ -493,6 +533,12 @@ win_condition = False
 clicked_on = False
 infinite_mode = False
 
+clicked_on_chill = False
+chill_mode = False
+
+clicked_on_background = False
+background_toggle = False
+
 score_image = pygame.image.load("images/score_logo.png")
 coins_image = pygame.image.load("images/coins_logo.png")
 
@@ -577,13 +623,17 @@ while run:
             if not settings_menu_trigger:
                 startup_menu = True
 
-    screen.blit(background_field, (0, 0))
+    if not background_toggle:
+        screen.blit(background_field, (0, 0))
+    else:
+        screen.fill("white")
     
     screen.blit(score_image, (-75,100))
     draw_text(score_text , anime_font, (235,166,64), 70, 200)
 
-    screen.blit(coins_image, (265, 100))
-    draw_text(cat_coins_text, anime_font, (235, 166, 64), 400, 200)
+    if not chill_mode:
+        screen.blit(coins_image, (265, 100))
+        draw_text(cat_coins_text, anime_font, (235, 166, 64), 400, 200)
 
     pos = pygame.mouse.get_pos()
 
@@ -787,18 +837,18 @@ while run:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 1
+                    score += 10
                 else:
                     pass
             else:
                 if not played_sound_already:
                     pygame.mixer.find_channel().play(player_racket.hit_effect)
                     played_sound_already = True
-                    score += 1
+                    score += 10
 
             game_over = False
 
-            if score % 5 == 0:
+            if score % 5 == 0 and not chill_mode:
                 tennis_ball.movement_speed = tennis_ball.movement_speed + 3
 
                 send_coin = True
