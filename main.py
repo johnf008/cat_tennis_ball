@@ -354,11 +354,17 @@ def starting_menu(play_again, score, total_score, total_coins, coins, win):
     return True
 
 def settings_menu():
+    global infinite_mode
+    global clicked_on
+
     background = pygame.image.load("menu_screen/background_image.png")
     back_button = pygame.image.load("menu_screen/back_button.png")
+    infinite_button = pygame.image.load("menu_screen/infinite_mode_button.png")
 
     screen.blit(background, (0,0))
+
     screen.blit(back_button, (0,100))
+    screen.blit(infinite_button, (100, 200))
 
     pos = pygame.mouse.get_pos()
 
@@ -371,6 +377,22 @@ def settings_menu():
             click = True
     
     back_button_rect = back_button.get_rect(topleft = (0, 100))
+    infinite_button_rect = infinite_button.get_rect(topleft = (100, 200))
+    
+    if infinite_button_rect.collidepoint(pos):
+        if click:
+            if not clicked_on:
+                infinite_mode = True
+                clicked_on = True
+            elif clicked_on:
+                infinite_mode = False
+                clicked_on = False
+
+    if infinite_mode:
+        pygame.draw.rect(screen, "pink", infinite_button_rect, 3)
+    else:
+        pygame.draw.rect(screen, "red", infinite_button_rect, 1)
+
     if back_button_rect.collidepoint(pos):
         if click:
             return False
@@ -468,6 +490,8 @@ played_explosion_sound_already = False
 
 win_condition = False
 
+clicked_on = False
+infinite_mode = False
 
 score_image = pygame.image.load("images/score_logo.png")
 coins_image = pygame.image.load("images/coins_logo.png")
@@ -695,7 +719,7 @@ while run:
         tennis_ball.movement_speed = 7
 
         pygame.mixer.music.play()
-    elif score == 50 and tennis_ball.y <= 15 and not game_over:
+    elif score == 50 and tennis_ball.y <= 15 and not game_over and not infinite_mode:
         forward = False
         angle_left = False
         angle_right = False
